@@ -1,1 +1,3 @@
-export const entities = 5;
+module.exports = {
+	entityCount: 5
+}
