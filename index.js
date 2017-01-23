@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 
 var bodyParser = require('koa-bodyparser');
 var router = require('koa-router')();

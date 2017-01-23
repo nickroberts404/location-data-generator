@@ -6,6 +6,7 @@
   "repository": "https://github.com/nickroberts404/location-data-generator.git",
   "author": "nickroberts404 <nickroberts404@gmail.com>",
   "license": "MIT",
+  "bin": {"location-data-generator": "index.js"},
   "dependencies": {
     "koa": "^1.2.4",
     "koa-bodyparser": "^2.3.0",
