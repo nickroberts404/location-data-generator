@@ -1,3 +1,4 @@
 module.exports = {
-	entityCount: 5
+	port: 3030,
+	entityCount: 5,
 }
