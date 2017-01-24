@@ -1,26 +1,27 @@
 #!/usr/bin/env node
 
-var bodyParser = require('koa-bodyparser');
-var logger = require('koa-logger');
-var router = require('./routes');
-var koa = require('koa');
-var app = module.exports = koa();
+const express = require('express');
+const bodyParser = require('body-parser');
+const router = require('./routes');
+const morgan = require('morgan');
+
+const app = express();
 
 // Port that server will listen on
-var port = require('./config').port;
+const port = require('./config').port;
 
 // Basic Middleware
-app.use(logger());
-app.use(bodyParser());
+app.use(express.static('public'));
+app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
-// Route Middleware
-app.use(router.routes())
-app.use(router.allowedMethods());
+// Router
+app.use(router);
 
 // SPIN IT!!!
 if(!module.parent) {
-	app.listen(port);
-	console.log('Now listening at http://localhost:'+port);
+	app.listen(port, () => console.log('Now listening at http://localhost:'+port));
 }
 
 
