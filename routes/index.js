@@ -2,10 +2,10 @@
 
 var locationBrewer = require('../lib/locationBrewer');
 var router = require('koa-router')();
-var config = require('../config');
+var options = require('../options');
 
 //Data initialization
-var data = locationBrewer.getCoordinateArray(config.entityCount);
+var data = locationBrewer.getCoordinateArray(options.nodes);
 
  // Routes
 router.get('/', function *(next) {
