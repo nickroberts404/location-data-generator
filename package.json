@@ -15,9 +15,10 @@
     "location-data-generator": "index.js"
   },
   "dependencies": {
-    "commander": "^2.9.0",
     "body-parser": "^1.15.2",
+    "commander": "^2.9.0",
     "express": "^4.14.0",
+    "mapbox-gl": "^0.31.0",
     "morgan": "^1.7.0",
     "react": "^15.0.2",
     "react-dom": "^15.0.2"

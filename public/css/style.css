@@ -1,0 +1,9 @@
+html, body { height: 100%; }
+.map {
+	width: 100vw;
+	height: 100vh;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+.mapboxgl-canvas {
+	outline: none;
+}
