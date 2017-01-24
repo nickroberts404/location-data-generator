@@ -5,7 +5,7 @@ var router = require('koa-router')();
 var options = require('../options');
 
 //Data initialization
-var data = locationBrewer.getCoordinateArray(options.nodes);
+var data = locationBrewer.getCoordinateArray(options.nodes, options.bbox);
 
  // Routes
 router.get('/', function *(next) {
