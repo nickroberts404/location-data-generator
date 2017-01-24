@@ -13,7 +13,7 @@ var parseBBox = (i) => {
 program
 	.version('0.0.1')
 	.option('-n, --nodes <n>', 'The amount of nodes', i => parseInt(i), config.nodeCount)
-	.option('-b, --bbox <n>', 'The bounding box, nw to se [[lat1, lng1], [lat2, lng2]]', parseBBox, config.bbox)
+	.option('-b, --bbox <n>', 'The bounding box, NW to SE [[lat1, lng1], [lat2, lng2]]', parseBBox, config.bbox)
 	.parse(process.argv);
 
 module.exports = program;
