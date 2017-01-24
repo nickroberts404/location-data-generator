@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "./node_modules/.bin/webpack --watch",
+    "start": "nodemon --ignore client",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "https://github.com/nickroberts404/location-data-generator.git",
