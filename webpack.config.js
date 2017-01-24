@@ -6,6 +6,7 @@ var PATHS = {
 
 var config = {
 	entry:[
+		'whatwg-fetch'
 		`${PATHS.src}/index`
 	],
 	output: {
