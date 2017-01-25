@@ -1,6 +1,6 @@
 
 var PATHS = {
-	src: __dirname + '/client/src',
+	src: __dirname + '/client',
 	dist: __dirname + '/public',
 }
 
