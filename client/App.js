@@ -6,26 +6,27 @@ import 'whatwg-fetch';
 export default class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {config: {}, nodes: []}
+		this.state = {settings: {}, nodes: []}
 	}
 
 	componentDidMount() {
 		fetch('/api')
 			.then(res => res.json())
 			.then(res => this.setState({nodes: res}))
-		// fetch('/api/config')
-		// 	.then(res => res.json())
-		// 	.then(res => this.setState({config: res}))
-
+		fetch('/settings')
+			.then(res => res.json())
+			.then(res => this.setState({settings: res}))
 	}
 
+	updateConfig
+
 	render() {
-		const { config, nodes } = this.state;
-		console.log('rendering');
+		const { settings, nodes } = this.state;
+		console.log(settings);
 		return (
 			<div>
 				<MainMap nodes={nodes} />
-				<Panel config={config} />
+				<Panel settings={settings} />
 			</div>
 		)
 	}
