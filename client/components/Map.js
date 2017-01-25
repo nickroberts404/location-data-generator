@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { mapboxKey, mapboxStyle } from '../../config';
 import equal from 'deep-equal';
 const mapbox = require('mapbox-gl/dist/mapbox-gl.js');
+const MapboxDraw = require('@mapbox/mapbox-gl-draw');
 mapbox.accessToken = mapboxKey;
 
 export default class MainMap extends Component {
@@ -13,12 +14,20 @@ export default class MainMap extends Component {
 
 	componentDidMount() {
 		this._mapLoaded = false;
+		const Draw = new MapboxDraw({
+			displayControlsDefault: false,
+		    controls: {
+		        polygon: true,
+		        trash: true
+		    }
+		});
 		const map = new mapbox.Map({
 			container: 'map',
 			style: mapboxStyle,
 			center: [-97.7431, 30.2672],
 			zoom: 3,
 		});
+		map.addControl(Draw);
 		map.on('load', ()=> this._mapLoaded = true);
 		this.setState({map});
 	}
@@ -31,14 +40,6 @@ export default class MainMap extends Component {
 			else addPoints(nextProps.nodes, map);
 			this.setState({nodes: nextProps.nodes});
 		}
-		if(nextProps.bboxMode) {
-			map.on('mousedown', this.addBBoxHandlers)
-		} else {
-			map.off('mousedown', this.addBBoxHandlers)
-		}
-	}
-	addBBoxHandlers(e) {
-		console.log(e);
 	}
 
 	render() {
@@ -48,7 +49,6 @@ export default class MainMap extends Component {
 
 MainMap.propTypes = {
 	nodes: PropTypes.array.isRequired,
-	bboxMode: PropTypes.bool,
 }
 
 const addPoints = (points, map) => {

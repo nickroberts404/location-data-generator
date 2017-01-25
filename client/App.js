@@ -6,7 +6,7 @@ import 'whatwg-fetch';
 export default class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {settings: {}, nodes: [], bboxMode: false}
+		this.state = {settings: {}, nodes: [] }
 	}
 
 	componentDidMount() {
@@ -21,10 +21,6 @@ export default class App extends Component {
 	updateSettings(newSettings) {
 		const { settings } = this.state;
 		this.setState({settings: Object.assign({}, settings, newSettings)});
-	}
-
-	updateBBoxMode(bboxMode) {
-		this.setState({bboxMode});
 	}
 
 	resetData() {
@@ -43,16 +39,14 @@ export default class App extends Component {
 	}
 
 	render() {
-		const { settings, nodes, bboxMode } = this.state;
+		const { settings, nodes } = this.state;
 		return (
 			<div>
-				<MainMap nodes={nodes} bboxMode={bboxMode} />
+				<MainMap nodes={nodes} />
 				<Panel
 					settings={settings}
 					updateSettings={this.updateSettings.bind(this)}
-					resetData={this.resetData.bind(this)}
-					updateBBoxMode={this.updateBBoxMode.bind(this)}
-					bboxMode={bboxMode} />
+					resetData={this.resetData.bind(this)} />
 			</div>
 		)
 	}
