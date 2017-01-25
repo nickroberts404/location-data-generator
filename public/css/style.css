@@ -1,4 +1,16 @@
 html, body { height: 100%; }
+
+/* Panel */
+.panel {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	height: 100vw;
+	width: 300px;
+	background: rgba(255, 255, 255, 0.8);
+}
+/* Map */
 .map {
 	width: 100vw;
 	height: 100vh;
