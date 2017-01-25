@@ -3,6 +3,10 @@ import MainMap from './components/Map';
 import Panel from './components/Panel';
 
 export default class App extends Component {
+	constructor(props) {
+		super(props);
+	}
+	
 	render() {
 		return (
 			<div>

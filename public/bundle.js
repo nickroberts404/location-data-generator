@@ -22001,10 +22001,10 @@
 	var App = function (_Component) {
 		_inherits(App, _Component);
 
-		function App() {
+		function App(props) {
 			_classCallCheck(this, App);
 
-			return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+			return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 		}
 
 		_createClass(App, [{
@@ -24619,6 +24619,68 @@
 /* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _NumberInput = __webpack_require__(189);
+
+	var _NumberInput2 = _interopRequireDefault(_NumberInput);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Panel = function (_Component) {
+		_inherits(Panel, _Component);
+
+		function Panel() {
+			_classCallCheck(this, Panel);
+
+			return _possibleConstructorReturn(this, (Panel.__proto__ || Object.getPrototypeOf(Panel)).apply(this, arguments));
+		}
+
+		_createClass(Panel, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'panel' },
+					_react2.default.createElement(_NumberInput2.default, {
+						id: 'node-count-input',
+						value: 5,
+						label: 'Node Count',
+						onChange: function onChange() {
+							return console.log('node count changed...');
+						} })
+				);
+			}
+		}]);
+
+		return Panel;
+	}(_react.Component);
+
+	exports.default = Panel;
+
+
+	Panel.propTypes = {};
+
+/***/ },
+/* 189 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -24639,26 +24701,55 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Panel = function (_Component) {
-		_inherits(Panel, _Component);
+	var NumberInput = function (_Component) {
+		_inherits(NumberInput, _Component);
 
-		function Panel() {
-			_classCallCheck(this, Panel);
+		function NumberInput() {
+			_classCallCheck(this, NumberInput);
 
-			return _possibleConstructorReturn(this, (Panel.__proto__ || Object.getPrototypeOf(Panel)).apply(this, arguments));
+			return _possibleConstructorReturn(this, (NumberInput.__proto__ || Object.getPrototypeOf(NumberInput)).apply(this, arguments));
 		}
 
-		_createClass(Panel, [{
+		_createClass(NumberInput, [{
 			key: "render",
 			value: function render() {
-				return _react2.default.createElement("div", { className: "panel" });
+				var _props = this.props,
+				    id = _props.id,
+				    value = _props.value,
+				    label = _props.label,
+				    onChange = _props.onChange;
+
+				return _react2.default.createElement(
+					"div",
+					{ className: "number-input-group" },
+					_react2.default.createElement(
+						"label",
+						{ className: "number-input-label", htmlFor: id },
+						label
+					),
+					_react2.default.createElement("input", {
+						type: "number",
+						id: id,
+						className: "number-input",
+						placeholder: 0,
+						value: value || 0,
+						onChange: onChange })
+				);
 			}
 		}]);
 
-		return Panel;
+		return NumberInput;
 	}(_react.Component);
 
-	exports.default = Panel;
+	exports.default = NumberInput;
+
+
+	NumberInput.propTypes = {
+		id: _react.PropTypes.string.isRequired,
+		value: _react.PropTypes.number,
+		label: _react.PropTypes.string,
+		onChange: _react.PropTypes.func
+	};
 
 /***/ }
 /******/ ]);
