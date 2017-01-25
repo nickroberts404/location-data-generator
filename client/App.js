@@ -40,7 +40,6 @@ export default class App extends Component {
 
 	render() {
 		const { settings, nodes } = this.state;
-		console.log(nodes);
 		return (
 			<div>
 				<MainMap nodes={nodes} />

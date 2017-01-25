@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import { mapboxKey, mapboxStyle } from '../../config';
 import equal from 'deep-equal';
 const mapbox = require('mapbox-gl/dist/mapbox-gl.js');
 mapbox.accessToken = mapboxKey;
 
-export default class Map extends Component {
+export default class MainMap extends Component {
 
 	constructor(props) {
 		super(props);
@@ -36,6 +36,10 @@ export default class Map extends Component {
 	render() {
 		return <div id="map" className="map"></div>
 	}
+}
+
+MainMap.propTypes = {
+	nodes: PropTypes.array.isRequired;
 }
 
 const addPoints = (points, map) => {

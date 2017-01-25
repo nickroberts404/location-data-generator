@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import NumberInput from './NumberInput';
 
 export default class Panel extends Component {
-
+	
 	render() {
 		const { settings, updateSettings, resetData } = this.props;
 		return (
