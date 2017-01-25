@@ -31,6 +31,14 @@ export default class MainMap extends Component {
 			else addPoints(nextProps.nodes, map);
 			this.setState({nodes: nextProps.nodes});
 		}
+		if(nextProps.bboxMode) {
+			map.on('mousedown', this.addBBoxHandlers)
+		} else {
+			map.off('mousedown', this.addBBoxHandlers)
+		}
+	}
+	addBBoxHandlers(e) {
+		console.log(e);
 	}
 
 	render() {
@@ -39,7 +47,8 @@ export default class MainMap extends Component {
 }
 
 MainMap.propTypes = {
-	nodes: PropTypes.array.isRequired;
+	nodes: PropTypes.array.isRequired,
+	bboxMode: PropTypes.bool,
 }
 
 const addPoints = (points, map) => {
