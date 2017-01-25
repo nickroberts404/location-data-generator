@@ -22029,18 +22029,47 @@
 				});
 			}
 		}, {
+			key: 'updateSettings',
+			value: function updateSettings(newSettings) {
+				var settings = this.state.settings;
+
+				this.setState({ settings: Object.assign({}, settings, newSettings) });
+			}
+		}, {
+			key: 'resetData',
+			value: function resetData() {
+				var _this3 = this;
+
+				var settings = this.state.settings;
+
+				fetch('/settings', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(settings)
+				}).then(function (res) {
+					return res.json();
+				}).then(function (res) {
+					_this3.setState(res);
+				});
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				var _state = this.state,
 				    settings = _state.settings,
 				    nodes = _state.nodes;
 
-				console.log(settings);
+				console.log(nodes);
 				return _react2.default.createElement(
 					'div',
 					null,
 					_react2.default.createElement(_Map2.default, { nodes: nodes }),
-					_react2.default.createElement(_Panel2.default, { settings: settings })
+					_react2.default.createElement(_Panel2.default, {
+						settings: settings,
+						updateSettings: this.updateSettings.bind(this),
+						resetData: this.resetData.bind(this) })
 				);
 			}
 		}]);
@@ -22098,11 +22127,17 @@
 		_createClass(Map, [{
 			key: 'componentDidMount',
 			value: function componentDidMount() {
+				var _this2 = this;
+
+				this._mapLoaded = false;
 				var map = new mapbox.Map({
 					container: 'map',
 					style: _config.mapboxStyle,
 					center: [-97.7431, 30.2672],
 					zoom: 3
+				});
+				map.on('load', function () {
+					return _this2._mapLoaded = true;
 				});
 				this.setState({ map: map });
 			}
@@ -22115,7 +22150,9 @@
 				// If the server did not send different nodes than the ones we had before, do not update.
 
 				if (!(0, _deepEqual2.default)(nextProps.nodes, nodes)) {
-					addPoints(nextProps.nodes, map);
+					if (!this._mapLoaded) map.on('load', function () {
+						return addPoints(nextProps.nodes, map);
+					});else addPoints(nextProps.nodes, map);
 					this.setState({ nodes: nextProps.nodes });
 				}
 			}
@@ -22137,25 +22174,23 @@
 		var geoJSON = getGeoJSON(points, function (i) {
 			return [i.lng, i.lat];
 		});
-		map.on('load', function () {
-			// Remove old layers
-			if (map.getSource('points')) map.removeSource('points');
-			if (map.getLayer('points')) map.removeLayer('points');
+		// Remove old layers
+		if (map.getSource('points')) map.removeSource('points');
+		if (map.getLayer('points')) map.removeLayer('points');
 
-			var circleRadius = { stops: [[8, 3], [11, 7], [16, 15]] };
-			map.addSource('points', {
-				type: 'geojson',
-				data: geoJSON
-			});
-			map.addLayer({
-				id: 'points',
-				type: 'circle',
-				source: 'points',
-				paint: {
-					'circle-radius': circleRadius,
-					'circle-color': '#1eaedb'
-				}
-			});
+		var circleRadius = { stops: [[8, 3], [11, 7], [16, 15]] };
+		map.addSource('points', {
+			type: 'geojson',
+			data: geoJSON
+		});
+		map.addLayer({
+			id: 'points',
+			type: 'circle',
+			source: 'points',
+			paint: {
+				'circle-radius': circleRadius,
+				'circle-color': '#1eaedb'
+			}
 		});
 	};
 
@@ -24832,16 +24867,26 @@
 		_createClass(Panel, [{
 			key: 'render',
 			value: function render() {
+				var _props = this.props,
+				    settings = _props.settings,
+				    updateSettings = _props.updateSettings,
+				    resetData = _props.resetData;
+
 				return _react2.default.createElement(
 					'div',
 					{ className: 'panel' },
 					_react2.default.createElement(_NumberInput2.default, {
 						id: 'node-count-input',
-						value: 5,
+						value: settings.nodeCount || 0,
 						label: 'Node Count',
-						onChange: function onChange() {
-							return console.log('node count changed...');
-						} })
+						onChange: function onChange(e) {
+							return updateSettings({ nodeCount: parseInt(e.target.value) });
+						} }),
+					_react2.default.createElement(
+						'button',
+						{ onClick: resetData },
+						'Reset Data'
+					)
 				);
 			}
 		}]);
@@ -24852,7 +24897,11 @@
 	exports.default = Panel;
 
 
-	Panel.propTypes = {};
+	Panel.propTypes = {
+		settings: _react.PropTypes.object.isRequired,
+		updateSettings: _react.PropTypes.func.isRequired,
+		resetData: _react.PropTypes.func.isRequired
+	};
 
 /***/ },
 /* 192 */

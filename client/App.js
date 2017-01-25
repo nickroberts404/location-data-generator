@@ -18,15 +18,36 @@ export default class App extends Component {
 			.then(res => this.setState({settings: res}))
 	}
 
-	updateConfig
+	updateSettings(newSettings) {
+		const { settings } = this.state;
+		this.setState({settings: Object.assign({}, settings, newSettings)});
+	}
+
+	resetData() {
+		const { settings } = this.state;
+		fetch('/settings', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(settings)
+		})
+			.then(res => res.json())
+			.then(res => {
+				this.setState(res)
+			})
+	}
 
 	render() {
 		const { settings, nodes } = this.state;
-		console.log(settings);
+		console.log(nodes);
 		return (
 			<div>
 				<MainMap nodes={nodes} />
-				<Panel settings={settings} />
+				<Panel
+					settings={settings}
+					updateSettings={this.updateSettings.bind(this)}
+					resetData={this.resetData.bind(this)} />
 			</div>
 		)
 	}
