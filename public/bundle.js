@@ -21990,6 +21990,8 @@
 
 	var _Panel2 = _interopRequireDefault(_Panel);
 
+	__webpack_require__(1);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22004,17 +22006,39 @@
 		function App(props) {
 			_classCallCheck(this, App);
 
-			return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+			var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+
+			_this.state = { config: {}, nodes: [] };
+			return _this;
 		}
 
 		_createClass(App, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				var _this2 = this;
+
+				fetch('/api').then(function (res) {
+					return res.json();
+				}).then(function (res) {
+					return _this2.setState({ nodes: res });
+				});
+				// fetch('/api/config')
+				// 	.then(res => res.json())
+				// 	.then(res => this.setState({config: res}))
+			}
+		}, {
 			key: 'render',
 			value: function render() {
+				var _state = this.state,
+				    config = _state.config,
+				    nodes = _state.nodes;
+
+				console.log('rendering');
 				return _react2.default.createElement(
 					'div',
 					null,
-					_react2.default.createElement(_Map2.default, null),
-					_react2.default.createElement(_Panel2.default, null)
+					_react2.default.createElement(_Map2.default, { nodes: nodes }),
+					_react2.default.createElement(_Panel2.default, { config: config })
 				);
 			}
 		}]);
@@ -22040,9 +22064,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	__webpack_require__(1);
-
 	var _config = __webpack_require__(182);
+
+	var _deepEqual = __webpack_require__(190);
+
+	var _deepEqual2 = _interopRequireDefault(_deepEqual);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22063,50 +22089,33 @@
 
 			var _this = _possibleConstructorReturn(this, (Map.__proto__ || Object.getPrototypeOf(Map)).call(this, props));
 
-			_this.state = { map: null };
+			_this.state = { map: null, nodes: props.nodes };
 			return _this;
 		}
 
 		_createClass(Map, [{
 			key: 'componentDidMount',
 			value: function componentDidMount() {
-				var _this2 = this;
-
 				var map = new mapbox.Map({
 					container: 'map',
 					style: _config.mapboxStyle,
 					center: [-97.7431, 30.2672],
 					zoom: 3
 				});
-				fetch('/api').then(function (res) {
-					return res.json();
-				}).then(function (res) {
-					return _this2.addPoints(res, map);
-				});
 				this.setState({ map: map });
 			}
 		}, {
-			key: 'addPoints',
-			value: function addPoints(points, map) {
-				var geoJSON = getGeoJSON(points, function (i) {
-					return [i.lng, i.lat];
-				});
-				map.on('load', function () {
-					var circleRadius = { stops: [[8, 3], [11, 7], [16, 15]] };
-					map.addSource('points', {
-						type: 'geojson',
-						data: geoJSON
-					});
-					map.addLayer({
-						id: 'points',
-						type: 'circle',
-						source: 'points',
-						paint: {
-							'circle-radius': circleRadius,
-							'circle-color': '#1eaedb'
-						}
-					});
-				});
+			key: 'componentWillReceiveProps',
+			value: function componentWillReceiveProps(nextProps) {
+				var _state = this.state,
+				    map = _state.map,
+				    nodes = _state.nodes;
+				// If the server did not send different nodes than the ones we had before, do not update.
+
+				if (!(0, _deepEqual2.default)(nextProps.nodes, nodes)) {
+					addPoints(nextProps.nodes, map);
+					this.setState({ nodes: nextProps.nodes });
+				}
 			}
 		}, {
 			key: 'render',
@@ -22120,6 +22129,33 @@
 
 	exports.default = Map;
 
+
+	var addPoints = function addPoints(points, map) {
+		if (points.length < 1) return false;
+		var geoJSON = getGeoJSON(points, function (i) {
+			return [i.lng, i.lat];
+		});
+		map.on('load', function () {
+			// Remove old layers
+			if (map.getSource('points')) map.removeSource('points');
+			if (map.getLayer('points')) map.removeLayer('points');
+
+			var circleRadius = { stops: [[8, 3], [11, 7], [16, 15]] };
+			map.addSource('points', {
+				type: 'geojson',
+				data: geoJSON
+			});
+			map.addLayer({
+				id: 'points',
+				type: 'circle',
+				source: 'points',
+				paint: {
+					'circle-radius': circleRadius,
+					'circle-color': '#1eaedb'
+				}
+			});
+		});
+	};
 
 	var getGeoJSON = function getGeoJSON(items, getCoordinates) {
 		var geo = {
@@ -24750,6 +24786,147 @@
 		label: _react.PropTypes.string,
 		onChange: _react.PropTypes.func
 	};
+
+/***/ },
+/* 190 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var pSlice = Array.prototype.slice;
+	var objectKeys = __webpack_require__(191);
+	var isArguments = __webpack_require__(192);
+
+	var deepEqual = module.exports = function (actual, expected, opts) {
+	  if (!opts) opts = {};
+	  // 7.1. All identical values are equivalent, as determined by ===.
+	  if (actual === expected) {
+	    return true;
+
+	  } else if (actual instanceof Date && expected instanceof Date) {
+	    return actual.getTime() === expected.getTime();
+
+	  // 7.3. Other pairs that do not both pass typeof value == 'object',
+	  // equivalence is determined by ==.
+	  } else if (!actual || !expected || typeof actual != 'object' && typeof expected != 'object') {
+	    return opts.strict ? actual === expected : actual == expected;
+
+	  // 7.4. For all other Object pairs, including Array objects, equivalence is
+	  // determined by having the same number of owned properties (as verified
+	  // with Object.prototype.hasOwnProperty.call), the same set of keys
+	  // (although not necessarily the same order), equivalent values for every
+	  // corresponding key, and an identical 'prototype' property. Note: this
+	  // accounts for both named and indexed properties on Arrays.
+	  } else {
+	    return objEquiv(actual, expected, opts);
+	  }
+	}
+
+	function isUndefinedOrNull(value) {
+	  return value === null || value === undefined;
+	}
+
+	function isBuffer (x) {
+	  if (!x || typeof x !== 'object' || typeof x.length !== 'number') return false;
+	  if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
+	    return false;
+	  }
+	  if (x.length > 0 && typeof x[0] !== 'number') return false;
+	  return true;
+	}
+
+	function objEquiv(a, b, opts) {
+	  var i, key;
+	  if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
+	    return false;
+	  // an identical 'prototype' property.
+	  if (a.prototype !== b.prototype) return false;
+	  //~~~I've managed to break Object.keys through screwy arguments passing.
+	  //   Converting to array solves the problem.
+	  if (isArguments(a)) {
+	    if (!isArguments(b)) {
+	      return false;
+	    }
+	    a = pSlice.call(a);
+	    b = pSlice.call(b);
+	    return deepEqual(a, b, opts);
+	  }
+	  if (isBuffer(a)) {
+	    if (!isBuffer(b)) {
+	      return false;
+	    }
+	    if (a.length !== b.length) return false;
+	    for (i = 0; i < a.length; i++) {
+	      if (a[i] !== b[i]) return false;
+	    }
+	    return true;
+	  }
+	  try {
+	    var ka = objectKeys(a),
+	        kb = objectKeys(b);
+	  } catch (e) {//happens when one is a string literal and the other isn't
+	    return false;
+	  }
+	  // having the same number of owned properties (keys incorporates
+	  // hasOwnProperty)
+	  if (ka.length != kb.length)
+	    return false;
+	  //the same set of keys (although not necessarily the same order),
+	  ka.sort();
+	  kb.sort();
+	  //~~~cheap key test
+	  for (i = ka.length - 1; i >= 0; i--) {
+	    if (ka[i] != kb[i])
+	      return false;
+	  }
+	  //equivalent values for every corresponding key, and
+	  //~~~possibly expensive deep test
+	  for (i = ka.length - 1; i >= 0; i--) {
+	    key = ka[i];
+	    if (!deepEqual(a[key], b[key], opts)) return false;
+	  }
+	  return typeof a === typeof b;
+	}
+
+
+/***/ },
+/* 191 */
+/***/ function(module, exports) {
+
+	exports = module.exports = typeof Object.keys === 'function'
+	  ? Object.keys : shim;
+
+	exports.shim = shim;
+	function shim (obj) {
+	  var keys = [];
+	  for (var key in obj) keys.push(key);
+	  return keys;
+	}
+
+
+/***/ },
+/* 192 */
+/***/ function(module, exports) {
+
+	var supportsArgumentsClass = (function(){
+	  return Object.prototype.toString.call(arguments)
+	})() == '[object Arguments]';
+
+	exports = module.exports = supportsArgumentsClass ? supported : unsupported;
+
+	exports.supported = supported;
+	function supported(object) {
+	  return Object.prototype.toString.call(object) == '[object Arguments]';
+	};
+
+	exports.unsupported = unsupported;
+	function unsupported(object){
+	  return object &&
+	    typeof object == 'object' &&
+	    typeof object.length == 'number' &&
+	    Object.prototype.hasOwnProperty.call(object, 'callee') &&
+	    !Object.prototype.propertyIsEnumerable.call(object, 'callee') ||
+	    false;
+	};
+
 
 /***/ }
 /******/ ]);
