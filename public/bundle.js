@@ -21986,7 +21986,7 @@
 
 	var _Map2 = _interopRequireDefault(_Map);
 
-	var _Panel = __webpack_require__(191);
+	var _Panel = __webpack_require__(252);
 
 	var _Panel2 = _interopRequireDefault(_Panel);
 
@@ -22064,7 +22064,7 @@
 				return _react2.default.createElement(
 					'div',
 					null,
-					_react2.default.createElement(_Map2.default, { nodes: nodes }),
+					_react2.default.createElement(_Map2.default, { nodes: nodes, updateSettings: this.updateSettings.bind(this) }),
 					_react2.default.createElement(_Panel2.default, {
 						settings: settings,
 						updateSettings: this.updateSettings.bind(this),
@@ -22109,7 +22109,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var mapbox = __webpack_require__(186);
-	var MapboxDraw = __webpack_require__(194);
+	var MapboxDraw = __webpack_require__(191);
 	mapbox.accessToken = _config.mapboxKey;
 
 	var MainMap = function (_Component) {
@@ -22130,7 +22130,7 @@
 				var _this2 = this;
 
 				this._mapLoaded = false;
-				var Draw = new MapboxDraw({
+				var draw = new MapboxDraw({
 					displayControlsDefault: false,
 					controls: {
 						polygon: true,
@@ -22143,7 +22143,11 @@
 					center: [-97.7431, 30.2672],
 					zoom: 3
 				});
-				map.addControl(Draw);
+				map.addControl(draw);
+				map.on('draw.create', function () {
+					var polygon = draw.getAll().features[0];
+					_this2.props.updateSettings({ boundingFeatures: polygon });
+				});
 				map.on('load', function () {
 					return _this2._mapLoaded = true;
 				});
@@ -22178,10 +22182,12 @@
 
 
 	MainMap.propTypes = {
-		nodes: _react.PropTypes.array.isRequired
+		nodes: _react.PropTypes.array.isRequired,
+		updateSettings: _react.PropTypes.func
 	};
 
 	var addPoints = function addPoints(points, map) {
+		console.log(points);
 		if (points.length < 1) return false;
 		var geoJSON = getGeoJSON(points, function (i) {
 			return [i.lng, i.lat];
@@ -24843,161 +24849,10 @@
 /* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(3);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _NumberInput = __webpack_require__(192);
-
-	var _NumberInput2 = _interopRequireDefault(_NumberInput);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Panel = function (_Component) {
-		_inherits(Panel, _Component);
-
-		function Panel() {
-			_classCallCheck(this, Panel);
-
-			return _possibleConstructorReturn(this, (Panel.__proto__ || Object.getPrototypeOf(Panel)).apply(this, arguments));
-		}
-
-		_createClass(Panel, [{
-			key: 'render',
-			value: function render() {
-				var _props = this.props,
-				    settings = _props.settings,
-				    updateSettings = _props.updateSettings,
-				    resetData = _props.resetData;
-
-				return _react2.default.createElement(
-					'div',
-					{ className: 'panel' },
-					_react2.default.createElement(_NumberInput2.default, {
-						id: 'node-count-input',
-						value: settings.nodeCount || 0,
-						label: 'Node Count',
-						onChange: function onChange(e) {
-							return updateSettings({ nodeCount: parseInt(e.target.value) });
-						} }),
-					_react2.default.createElement(
-						'button',
-						{ onClick: resetData },
-						'Reset Data'
-					)
-				);
-			}
-		}]);
-
-		return Panel;
-	}(_react.Component);
-
-	exports.default = Panel;
-
-
-	Panel.propTypes = {
-		settings: _react.PropTypes.object.isRequired,
-		updateSettings: _react.PropTypes.func.isRequired,
-		resetData: _react.PropTypes.func.isRequired
-	};
-
-/***/ },
-/* 192 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(3);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var NumberInput = function (_Component) {
-		_inherits(NumberInput, _Component);
-
-		function NumberInput() {
-			_classCallCheck(this, NumberInput);
-
-			return _possibleConstructorReturn(this, (NumberInput.__proto__ || Object.getPrototypeOf(NumberInput)).apply(this, arguments));
-		}
-
-		_createClass(NumberInput, [{
-			key: "render",
-			value: function render() {
-				var _props = this.props,
-				    id = _props.id,
-				    value = _props.value,
-				    label = _props.label,
-				    onChange = _props.onChange;
-
-				return _react2.default.createElement(
-					"div",
-					{ className: "number-input-group" },
-					_react2.default.createElement(
-						"label",
-						{ className: "number-input-label", htmlFor: id },
-						label
-					),
-					_react2.default.createElement("input", {
-						type: "number",
-						id: id,
-						className: "number-input",
-						placeholder: 0,
-						value: value || 0,
-						onChange: onChange })
-				);
-			}
-		}]);
-
-		return NumberInput;
-	}(_react.Component);
-
-	exports.default = NumberInput;
-
-
-	NumberInput.propTypes = {
-		id: _react.PropTypes.string.isRequired,
-		value: _react.PropTypes.number,
-		label: _react.PropTypes.string,
-		onChange: _react.PropTypes.func
-	};
-
-/***/ },
-/* 193 */,
-/* 194 */
-/***/ function(module, exports, __webpack_require__) {
-
-	const runSetup = __webpack_require__(195);
-	const setupOptions = __webpack_require__(243);
-	const setupAPI = __webpack_require__(245);
-	const Constants = __webpack_require__(203);
+	const runSetup = __webpack_require__(192);
+	const setupOptions = __webpack_require__(240);
+	const setupAPI = __webpack_require__(242);
+	const Constants = __webpack_require__(200);
 
 	const setupDraw = function(options, api) {
 	  options = setupOptions(options);
@@ -25025,13 +24880,13 @@
 
 
 /***/ },
-/* 195 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const events = __webpack_require__(196);
-	const Store = __webpack_require__(237);
-	const ui = __webpack_require__(241);
-	const Constants = __webpack_require__(203);
+	const events = __webpack_require__(193);
+	const Store = __webpack_require__(234);
+	const ui = __webpack_require__(238);
+	const Constants = __webpack_require__(200);
 
 	module.exports = function(ctx) {
 
@@ -25133,21 +24988,21 @@
 
 
 /***/ },
-/* 196 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const setupModeHandler = __webpack_require__(197);
-	const getFeaturesAndSetCursor = __webpack_require__(198);
-	const isClick = __webpack_require__(206);
-	const Constants = __webpack_require__(203);
+	const setupModeHandler = __webpack_require__(194);
+	const getFeaturesAndSetCursor = __webpack_require__(195);
+	const isClick = __webpack_require__(203);
+	const Constants = __webpack_require__(200);
 
 	const modes = {
-	  [Constants.modes.SIMPLE_SELECT]: __webpack_require__(208),
-	  [Constants.modes.DIRECT_SELECT]: __webpack_require__(231),
-	  [Constants.modes.DRAW_POINT]: __webpack_require__(232),
-	  [Constants.modes.DRAW_LINE_STRING]: __webpack_require__(233),
-	  [Constants.modes.DRAW_POLYGON]: __webpack_require__(235),
-	  [Constants.modes.STATIC]: __webpack_require__(236)
+	  [Constants.modes.SIMPLE_SELECT]: __webpack_require__(205),
+	  [Constants.modes.DIRECT_SELECT]: __webpack_require__(228),
+	  [Constants.modes.DRAW_POINT]: __webpack_require__(229),
+	  [Constants.modes.DRAW_LINE_STRING]: __webpack_require__(230),
+	  [Constants.modes.DRAW_POLYGON]: __webpack_require__(232),
+	  [Constants.modes.STATIC]: __webpack_require__(233)
 	};
 
 	module.exports = function(ctx) {
@@ -25343,7 +25198,7 @@
 
 
 /***/ },
-/* 197 */
+/* 194 */
 /***/ function(module, exports) {
 
 	
@@ -25447,11 +25302,11 @@
 
 
 /***/ },
-/* 198 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const featuresAt = __webpack_require__(199);
-	const Constants = __webpack_require__(203);
+	const featuresAt = __webpack_require__(196);
+	const Constants = __webpack_require__(200);
 
 	module.exports = function getFeatureAtAndSetCursors(event, ctx) {
 	  const features = featuresAt(event, null, ctx);
@@ -25475,13 +25330,13 @@
 
 
 /***/ },
-/* 199 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const sortFeatures = __webpack_require__(200);
-	const mapEventToBoundingBox = __webpack_require__(204);
-	const Constants = __webpack_require__(203);
-	const StringSet = __webpack_require__(205);
+	const sortFeatures = __webpack_require__(197);
+	const mapEventToBoundingBox = __webpack_require__(201);
+	const Constants = __webpack_require__(200);
+	const StringSet = __webpack_require__(202);
 
 	const META_TYPES = [
 	  Constants.meta.FEATURE,
@@ -25517,11 +25372,11 @@
 
 
 /***/ },
-/* 200 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const area = __webpack_require__(201);
-	const Constants = __webpack_require__(203);
+	const area = __webpack_require__(198);
+	const Constants = __webpack_require__(200);
 
 	const FEATURE_SORT_RANKS = {
 	  Point: 0,
@@ -25562,10 +25417,10 @@
 
 
 /***/ },
-/* 201 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var wgs84 = __webpack_require__(202);
+	var wgs84 = __webpack_require__(199);
 
 	module.exports.geometry = geometry;
 	module.exports.ring = ringArea;
@@ -25656,7 +25511,7 @@
 	}
 
 /***/ },
-/* 202 */
+/* 199 */
 /***/ function(module, exports) {
 
 	module.exports.RADIUS = 6378137;
@@ -25665,7 +25520,7 @@
 
 
 /***/ },
-/* 203 */
+/* 200 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -25753,7 +25608,7 @@
 
 
 /***/ },
-/* 204 */
+/* 201 */
 /***/ function(module, exports) {
 
 	/**
@@ -25773,7 +25628,7 @@
 
 
 /***/ },
-/* 205 */
+/* 202 */
 /***/ function(module, exports) {
 
 	function StringSet(items) {
@@ -25817,10 +25672,10 @@
 
 
 /***/ },
-/* 206 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const euclideanDistance = __webpack_require__(207);
+	const euclideanDistance = __webpack_require__(204);
 
 	const FINE_TOLERANCE = 4;
 	const GROSS_TOLERANCE = 12;
@@ -25841,7 +25696,7 @@
 
 
 /***/ },
-/* 207 */
+/* 204 */
 /***/ function(module, exports) {
 
 	module.exports = function(a, b) {
@@ -25852,18 +25707,18 @@
 
 
 /***/ },
-/* 208 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const CommonSelectors = __webpack_require__(209);
-	const mouseEventPoint = __webpack_require__(210);
-	const featuresAt = __webpack_require__(199);
-	const createSupplementaryPoints = __webpack_require__(212);
-	const StringSet = __webpack_require__(205);
-	const doubleClickZoom = __webpack_require__(215);
-	const moveFeatures = __webpack_require__(216);
-	const Constants = __webpack_require__(203);
-	const MultiFeature = __webpack_require__(225);
+	const CommonSelectors = __webpack_require__(206);
+	const mouseEventPoint = __webpack_require__(207);
+	const featuresAt = __webpack_require__(196);
+	const createSupplementaryPoints = __webpack_require__(209);
+	const StringSet = __webpack_require__(202);
+	const doubleClickZoom = __webpack_require__(212);
+	const moveFeatures = __webpack_require__(213);
+	const Constants = __webpack_require__(200);
+	const MultiFeature = __webpack_require__(222);
 
 	module.exports = function(ctx, options = {}) {
 	  let dragMoveLocation = null;
@@ -26215,10 +26070,10 @@
 
 
 /***/ },
-/* 209 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Constants = __webpack_require__(203);
+	const Constants = __webpack_require__(200);
 
 	module.exports = {
 	  isOfMetaType: function(type) {
@@ -26277,10 +26132,10 @@
 
 
 /***/ },
-/* 210 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Point = __webpack_require__(211);
+	const Point = __webpack_require__(208);
 
 	/**
 	 * Returns a Point representing a mouse event's position
@@ -26302,7 +26157,7 @@
 
 
 /***/ },
-/* 211 */
+/* 208 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -26439,12 +26294,12 @@
 
 
 /***/ },
-/* 212 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const createVertex = __webpack_require__(213);
-	const createMidpoint = __webpack_require__(214);
-	const Constants = __webpack_require__(203);
+	const createVertex = __webpack_require__(210);
+	const createMidpoint = __webpack_require__(211);
+	const Constants = __webpack_require__(200);
 
 	function createSupplementaryPoints(geojson, options = {}, basePath = null) {
 	  const { type, coordinates } = geojson.geometry;
@@ -26528,10 +26383,10 @@
 
 
 /***/ },
-/* 213 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Constants = __webpack_require__(203);
+	const Constants = __webpack_require__(200);
 
 	/**
 	 * Returns GeoJSON for a Point representing the
@@ -26562,10 +26417,10 @@
 
 
 /***/ },
-/* 214 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Constants = __webpack_require__(203);
+	const Constants = __webpack_require__(200);
 
 	module.exports = function(parent, startVertex, endVertex, map) {
 	  const startCoord = startVertex.geometry.coordinates;
@@ -26602,7 +26457,7 @@
 
 
 /***/ },
-/* 215 */
+/* 212 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -26622,11 +26477,11 @@
 
 
 /***/ },
-/* 216 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const constrainFeatureMovement = __webpack_require__(217);
-	const Constants = __webpack_require__(203);
+	const constrainFeatureMovement = __webpack_require__(214);
+	const Constants = __webpack_require__(200);
 
 	module.exports = function(features, delta) {
 	  const constrainedDelta = constrainFeatureMovement(features.map(feature => feature.toGeoJSON()), delta);
@@ -26661,11 +26516,11 @@
 
 
 /***/ },
-/* 217 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const extent = __webpack_require__(218);
-	const Constants = __webpack_require__(203);
+	const extent = __webpack_require__(215);
+	const Constants = __webpack_require__(200);
 
 	const {
 	  LAT_MIN,
@@ -26734,12 +26589,12 @@
 
 
 /***/ },
-/* 218 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var geojsonCoords = __webpack_require__(219),
-	    traverse = __webpack_require__(223),
-	    extent = __webpack_require__(224);
+	var geojsonCoords = __webpack_require__(216),
+	    traverse = __webpack_require__(220),
+	    extent = __webpack_require__(221);
 
 	module.exports = function(_) {
 	    return getExtent(_).bbox();
@@ -26768,12 +26623,12 @@
 
 
 /***/ },
-/* 219 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var geojsonNormalize = __webpack_require__(220),
-	    geojsonFlatten = __webpack_require__(221),
-	    flatten = __webpack_require__(222);
+	var geojsonNormalize = __webpack_require__(217),
+	    geojsonFlatten = __webpack_require__(218),
+	    flatten = __webpack_require__(219);
 
 	module.exports = function(_) {
 	    if (!_) return [];
@@ -26788,7 +26643,7 @@
 
 
 /***/ },
-/* 220 */
+/* 217 */
 /***/ function(module, exports) {
 
 	module.exports = normalize;
@@ -26837,7 +26692,7 @@
 
 
 /***/ },
-/* 221 */
+/* 218 */
 /***/ function(module, exports) {
 
 	module.exports = flatten;
@@ -26882,7 +26737,7 @@
 
 
 /***/ },
-/* 222 */
+/* 219 */
 /***/ function(module, exports) {
 
 	module.exports = function flatten(list, depth) {
@@ -26906,7 +26761,7 @@
 
 
 /***/ },
-/* 223 */
+/* 220 */
 /***/ function(module, exports) {
 
 	var traverse = module.exports = function (obj) {
@@ -27226,7 +27081,7 @@
 
 
 /***/ },
-/* 224 */
+/* 221 */
 /***/ function(module, exports) {
 
 	module.exports = Extent;
@@ -27293,17 +27148,17 @@
 
 
 /***/ },
-/* 225 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Feature = __webpack_require__(226);
-	const Constants = __webpack_require__(203);
-	const hat = __webpack_require__(227);
+	const Feature = __webpack_require__(223);
+	const Constants = __webpack_require__(200);
+	const hat = __webpack_require__(224);
 
 	const models = {
-	  MultiPoint: __webpack_require__(228),
-	  MultiLineString: __webpack_require__(229),
-	  MultiPolygon: __webpack_require__(230)
+	  MultiPoint: __webpack_require__(225),
+	  MultiLineString: __webpack_require__(226),
+	  MultiPolygon: __webpack_require__(227)
 	};
 
 	const takeAction = (features, action, path, lng, lat) => {
@@ -27380,11 +27235,11 @@
 
 
 /***/ },
-/* 226 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const hat = __webpack_require__(227);
-	const Constants = __webpack_require__(203);
+	const hat = __webpack_require__(224);
+	const Constants = __webpack_require__(200);
 
 	const Feature = function(ctx, geojson) {
 	  this.ctx = ctx;
@@ -27456,7 +27311,7 @@
 
 
 /***/ },
-/* 227 */
+/* 224 */
 /***/ function(module, exports) {
 
 	var hat = module.exports = function (bits, base) {
@@ -27524,10 +27379,10 @@
 
 
 /***/ },
-/* 228 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Feature = __webpack_require__(226);
+	const Feature = __webpack_require__(223);
 
 	const Point = function(ctx, geojson) {
 	  Feature.call(this, ctx, geojson);
@@ -27557,10 +27412,10 @@
 
 
 /***/ },
-/* 229 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Feature = __webpack_require__(226);
+	const Feature = __webpack_require__(223);
 
 	const LineString = function(ctx, geojson) {
 	  Feature.call(this, ctx, geojson);
@@ -27598,10 +27453,10 @@
 
 
 /***/ },
-/* 230 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Feature = __webpack_require__(226);
+	const Feature = __webpack_require__(223);
 
 	const Polygon = function(ctx, geojson) {
 	  Feature.call(this, ctx, geojson);
@@ -27675,16 +27530,16 @@
 
 
 /***/ },
-/* 231 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const {noTarget, isOfMetaType, isInactiveFeature, isShiftDown} = __webpack_require__(209);
-	const createSupplementaryPoints = __webpack_require__(212);
-	const constrainFeatureMovement = __webpack_require__(217);
-	const doubleClickZoom = __webpack_require__(215);
-	const Constants = __webpack_require__(203);
-	const CommonSelectors = __webpack_require__(209);
-	const moveFeatures = __webpack_require__(216);
+	const {noTarget, isOfMetaType, isInactiveFeature, isShiftDown} = __webpack_require__(206);
+	const createSupplementaryPoints = __webpack_require__(209);
+	const constrainFeatureMovement = __webpack_require__(214);
+	const doubleClickZoom = __webpack_require__(212);
+	const Constants = __webpack_require__(200);
+	const CommonSelectors = __webpack_require__(206);
+	const moveFeatures = __webpack_require__(213);
 
 	const isVertex = isOfMetaType(Constants.meta.VERTEX);
 	const isMidpoint = isOfMetaType(Constants.meta.MIDPOINT);
@@ -27883,12 +27738,12 @@
 
 
 /***/ },
-/* 232 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const CommonSelectors = __webpack_require__(209);
-	const Point = __webpack_require__(228);
-	const Constants = __webpack_require__(203);
+	const CommonSelectors = __webpack_require__(206);
+	const Point = __webpack_require__(225);
+	const Constants = __webpack_require__(200);
 
 	module.exports = function(ctx) {
 
@@ -27956,15 +27811,15 @@
 
 
 /***/ },
-/* 233 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const CommonSelectors = __webpack_require__(209);
-	const LineString = __webpack_require__(229);
-	const isEventAtCoordinates = __webpack_require__(234);
-	const doubleClickZoom = __webpack_require__(215);
-	const Constants = __webpack_require__(203);
-	const createVertex = __webpack_require__(213);
+	const CommonSelectors = __webpack_require__(206);
+	const LineString = __webpack_require__(226);
+	const isEventAtCoordinates = __webpack_require__(231);
+	const doubleClickZoom = __webpack_require__(212);
+	const Constants = __webpack_require__(200);
+	const createVertex = __webpack_require__(210);
 
 	module.exports = function(ctx) {
 	  const line = new LineString(ctx, {
@@ -28062,7 +27917,7 @@
 
 
 /***/ },
-/* 234 */
+/* 231 */
 /***/ function(module, exports) {
 
 	function isEventAtCoordinates(event, coordinates) {
@@ -28074,15 +27929,15 @@
 
 
 /***/ },
-/* 235 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const CommonSelectors = __webpack_require__(209);
-	const Polygon = __webpack_require__(230);
-	const doubleClickZoom = __webpack_require__(215);
-	const Constants = __webpack_require__(203);
-	const isEventAtCoordinates = __webpack_require__(234);
-	const createVertex = __webpack_require__(213);
+	const CommonSelectors = __webpack_require__(206);
+	const Polygon = __webpack_require__(227);
+	const doubleClickZoom = __webpack_require__(212);
+	const Constants = __webpack_require__(200);
+	const isEventAtCoordinates = __webpack_require__(231);
+	const createVertex = __webpack_require__(210);
 
 	module.exports = function(ctx) {
 
@@ -28211,7 +28066,7 @@
 
 
 /***/ },
-/* 236 */
+/* 233 */
 /***/ function(module, exports) {
 
 	module.exports = function(ctx) {
@@ -28232,13 +28087,13 @@
 
 
 /***/ },
-/* 237 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const throttle = __webpack_require__(238);
-	const toDenseArray = __webpack_require__(239);
-	const StringSet = __webpack_require__(205);
-	const render = __webpack_require__(240);
+	const throttle = __webpack_require__(235);
+	const toDenseArray = __webpack_require__(236);
+	const StringSet = __webpack_require__(202);
+	const render = __webpack_require__(237);
 
 	const Store = module.exports = function(ctx) {
 	  this._features = {};
@@ -28527,7 +28382,7 @@
 
 
 /***/ },
-/* 238 */
+/* 235 */
 /***/ function(module, exports) {
 
 	function throttle(fn, time, context) {
@@ -28562,7 +28417,7 @@
 
 
 /***/ },
-/* 239 */
+/* 236 */
 /***/ function(module, exports) {
 
 	/**
@@ -28579,10 +28434,10 @@
 
 
 /***/ },
-/* 240 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Constants = __webpack_require__(203);
+	const Constants = __webpack_require__(200);
 
 	module.exports = function render() {
 	  const store = this;
@@ -28675,11 +28530,11 @@
 
 
 /***/ },
-/* 241 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const xtend = __webpack_require__(242);
-	const Constants = __webpack_require__(203);
+	const xtend = __webpack_require__(239);
+	const Constants = __webpack_require__(200);
 
 	const classTypes = ['mode', 'feature', 'mouse'];
 
@@ -28863,7 +28718,7 @@
 
 
 /***/ },
-/* 242 */
+/* 239 */
 /***/ function(module, exports) {
 
 	module.exports = extend
@@ -28888,11 +28743,11 @@
 
 
 /***/ },
-/* 243 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const xtend = __webpack_require__(242);
-	const Constants = __webpack_require__(203);
+	const xtend = __webpack_require__(239);
+	const Constants = __webpack_require__(200);
 
 	const defaultOptions = {
 	  defaultMode: Constants.modes.SIMPLE_SELECT,
@@ -28900,7 +28755,7 @@
 	  clickBuffer: 2,
 	  boxSelect: true,
 	  displayControlsDefault: true,
-	  styles: __webpack_require__(244),
+	  styles: __webpack_require__(241),
 	  controls: {},
 	  userProperties: false
 	};
@@ -28956,7 +28811,7 @@
 
 
 /***/ },
-/* 244 */
+/* 241 */
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -29189,25 +29044,25 @@
 
 
 /***/ },
-/* 245 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const isEqual = __webpack_require__(246);
-	const normalize = __webpack_require__(248);
-	const hat = __webpack_require__(227);
-	const featuresAt = __webpack_require__(199);
-	const stringSetsAreEqual = __webpack_require__(249);
-	const geojsonhint = __webpack_require__(250);
-	const Constants = __webpack_require__(203);
-	const StringSet = __webpack_require__(205);
+	const isEqual = __webpack_require__(243);
+	const normalize = __webpack_require__(245);
+	const hat = __webpack_require__(224);
+	const featuresAt = __webpack_require__(196);
+	const stringSetsAreEqual = __webpack_require__(246);
+	const geojsonhint = __webpack_require__(247);
+	const Constants = __webpack_require__(200);
+	const StringSet = __webpack_require__(202);
 
 	const featureTypes = {
-	  Polygon: __webpack_require__(230),
-	  LineString: __webpack_require__(229),
-	  Point: __webpack_require__(228),
-	  MultiPolygon: __webpack_require__(225),
-	  MultiLineString: __webpack_require__(225),
-	  MultiPoint: __webpack_require__(225)
+	  Polygon: __webpack_require__(227),
+	  LineString: __webpack_require__(226),
+	  Point: __webpack_require__(225),
+	  MultiPolygon: __webpack_require__(222),
+	  MultiLineString: __webpack_require__(222),
+	  MultiPoint: __webpack_require__(222)
 	};
 
 	module.exports = function(ctx, api) {
@@ -29391,7 +29246,7 @@
 
 
 /***/ },
-/* 246 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -31243,10 +31098,10 @@
 
 	module.exports = isEqual;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(247)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(244)(module)))
 
 /***/ },
-/* 247 */
+/* 244 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -31262,7 +31117,7 @@
 
 
 /***/ },
-/* 248 */
+/* 245 */
 /***/ function(module, exports) {
 
 	module.exports = normalize;
@@ -31311,7 +31166,7 @@
 
 
 /***/ },
-/* 249 */
+/* 246 */
 /***/ function(module, exports) {
 
 	module.exports = function(a, b) {
@@ -31321,11 +31176,11 @@
 
 
 /***/ },
-/* 250 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var jsonlint = __webpack_require__(251),
-	  geojsonHintObject = __webpack_require__(253);
+	var jsonlint = __webpack_require__(248),
+	  geojsonHintObject = __webpack_require__(250);
 
 	/**
 	 * @alias geojsonhint
@@ -31372,7 +31227,7 @@
 
 
 /***/ },
-/* 251 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, module) {/* parser generated by jison 0.4.17 */
@@ -32066,17 +31921,17 @@
 	        console.log('Usage: '+args[0]+' FILE');
 	        process.exit(1);
 	    }
-	    var source = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"fs\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())).readFileSync(__webpack_require__(252).normalize(args[1]), "utf8");
+	    var source = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"fs\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())).readFileSync(__webpack_require__(249).normalize(args[1]), "utf8");
 	    return exports.parser.parse(source);
 	};
 	if (typeof module !== 'undefined' && __webpack_require__.c[0] === module) {
 	  exports.main(process.argv.slice(1));
 	}
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(247)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(244)(module)))
 
 /***/ },
-/* 252 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -32307,10 +32162,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 253 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var rightHandRule = __webpack_require__(254);
+	var rightHandRule = __webpack_require__(251);
 
 	/**
 	 * @alias geojsonhint
@@ -32772,7 +32627,7 @@
 
 
 /***/ },
-/* 254 */
+/* 251 */
 /***/ function(module, exports) {
 
 	function rad(x) {
@@ -32822,6 +32677,156 @@
 	    }
 	};
 
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _NumberInput = __webpack_require__(253);
+
+	var _NumberInput2 = _interopRequireDefault(_NumberInput);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Panel = function (_Component) {
+		_inherits(Panel, _Component);
+
+		function Panel() {
+			_classCallCheck(this, Panel);
+
+			return _possibleConstructorReturn(this, (Panel.__proto__ || Object.getPrototypeOf(Panel)).apply(this, arguments));
+		}
+
+		_createClass(Panel, [{
+			key: 'render',
+			value: function render() {
+				var _props = this.props,
+				    settings = _props.settings,
+				    updateSettings = _props.updateSettings,
+				    resetData = _props.resetData;
+
+				return _react2.default.createElement(
+					'div',
+					{ className: 'panel' },
+					_react2.default.createElement(_NumberInput2.default, {
+						id: 'node-count-input',
+						value: settings.nodeCount || 0,
+						label: 'Node Count',
+						onChange: function onChange(e) {
+							return updateSettings({ nodeCount: parseInt(e.target.value) });
+						} }),
+					_react2.default.createElement(
+						'button',
+						{ onClick: resetData },
+						'Reset Data'
+					)
+				);
+			}
+		}]);
+
+		return Panel;
+	}(_react.Component);
+
+	exports.default = Panel;
+
+
+	Panel.propTypes = {
+		settings: _react.PropTypes.object.isRequired,
+		updateSettings: _react.PropTypes.func.isRequired,
+		resetData: _react.PropTypes.func.isRequired
+	};
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var NumberInput = function (_Component) {
+		_inherits(NumberInput, _Component);
+
+		function NumberInput() {
+			_classCallCheck(this, NumberInput);
+
+			return _possibleConstructorReturn(this, (NumberInput.__proto__ || Object.getPrototypeOf(NumberInput)).apply(this, arguments));
+		}
+
+		_createClass(NumberInput, [{
+			key: "render",
+			value: function render() {
+				var _props = this.props,
+				    id = _props.id,
+				    value = _props.value,
+				    label = _props.label,
+				    onChange = _props.onChange;
+
+				return _react2.default.createElement(
+					"div",
+					{ className: "number-input-group" },
+					_react2.default.createElement(
+						"label",
+						{ className: "number-input-label", htmlFor: id },
+						label
+					),
+					_react2.default.createElement("input", {
+						type: "number",
+						id: id,
+						className: "number-input",
+						placeholder: 0,
+						value: value || 0,
+						onChange: onChange })
+				);
+			}
+		}]);
+
+		return NumberInput;
+	}(_react.Component);
+
+	exports.default = NumberInput;
+
+
+	NumberInput.propTypes = {
+		id: _react.PropTypes.string.isRequired,
+		value: _react.PropTypes.number,
+		label: _react.PropTypes.string,
+		onChange: _react.PropTypes.func
+	};
 
 /***/ }
 /******/ ]);

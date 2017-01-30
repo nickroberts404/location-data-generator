@@ -42,7 +42,7 @@ export default class App extends Component {
 		const { settings, nodes } = this.state;
 		return (
 			<div>
-				<MainMap nodes={nodes} />
+				<MainMap nodes={nodes} updateSettings={this.updateSettings.bind(this)} />
 				<Panel
 					settings={settings}
 					updateSettings={this.updateSettings.bind(this)}

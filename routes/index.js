@@ -6,7 +6,7 @@ var options = require('../options');
 var settings = require('../settings');
 
 //Data initialization
-var data = locationBrewer.getCoordinateArray(options.nodes, options.bbox);
+var data = locationBrewer.getCoordinateArray(options.nodes, options.boundingFeatures);
 
  // Routes
 router.get('/', (req, res) => {
@@ -23,7 +23,7 @@ router.get('/settings', (req, res) => {
 
 router.post('/settings', (req, res) => {
 	settings = req.body;
-	data = locationBrewer.getCoordinateArray(settings.nodeCount, settings.bbox);
+	data = locationBrewer.getCoordinateArray(settings.nodeCount, settings.boundingFeatures);
 	res.send({
 		nodes: data,
 		settings: settings

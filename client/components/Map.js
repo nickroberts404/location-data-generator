@@ -14,7 +14,7 @@ export default class MainMap extends Component {
 
 	componentDidMount() {
 		this._mapLoaded = false;
-		const Draw = new MapboxDraw({
+		const draw = new MapboxDraw({
 			displayControlsDefault: false,
 		    controls: {
 		        polygon: true,
@@ -27,7 +27,11 @@ export default class MainMap extends Component {
 			center: [-97.7431, 30.2672],
 			zoom: 3,
 		});
-		map.addControl(Draw);
+		map.addControl(draw);
+		map.on('draw.create', () => {
+			var polygon = draw.getAll().features[0];
+			this.props.updateSettings({boundingFeatures: polygon})
+		})
 		map.on('load', ()=> this._mapLoaded = true);
 		this.setState({map});
 	}
@@ -49,9 +53,11 @@ export default class MainMap extends Component {
 
 MainMap.propTypes = {
 	nodes: PropTypes.array.isRequired,
+	updateSettings: PropTypes.func
 }
 
 const addPoints = (points, map) => {
+	console.log(points);
 	if(points.length < 1) return false;
 	const geoJSON = getGeoJSON(points, i => [i.lng, i.lat]);
 	// Remove old layers
