@@ -23,8 +23,7 @@ router.get('/settings', (req, res) => {
 
 router.post('/settings', (req, res) => {
 	settings = req.body;
-	console.log(settings.boundingFeature || options.boundingFeatures);
-	data = locationBrewer.getCoordinateArray(settings.nodeCount || options.nodeCount, settings.boundingFeature || options.boundingFeatures);
+	data = locationBrewer.getCoordinateArray(settings.nodeCount || options.nodeCount, settings.boundingFeature || options.boundingFeature);
 	res.send({
 		nodes: data,
 		settings: settings
