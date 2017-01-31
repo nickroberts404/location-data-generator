@@ -29,11 +29,21 @@ export default class MainMap extends Component {
 		});
 		map.addControl(draw);
 		map.on('draw.create', () => {
-			var polygon = draw.getAll().features[0];
-			this.props.updateSettings({boundingFeatures: polygon})
-		})
+			this.updateBoundingFeature(draw);
+		});
+		map.on('draw.delete', () => {
+			this.updateBoundingFeature(draw);
+		});
+		map.on('draw.update', () => {
+			this.updateBoundingFeature(draw);
+		});
 		map.on('load', ()=> this._mapLoaded = true);
 		this.setState({map});
+	}
+
+	updateBoundingFeature(draw) {
+		var polygon = draw.getAll().features[0] || null;
+		this.props.updateSettings({boundingFeature: polygon})
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -57,7 +67,6 @@ MainMap.propTypes = {
 }
 
 const addPoints = (points, map) => {
-	console.log(points);
 	if(points.length < 1) return false;
 	const geoJSON = getGeoJSON(points, i => [i.lng, i.lat]);
 	// Remove old layers

@@ -22145,13 +22145,24 @@
 				});
 				map.addControl(draw);
 				map.on('draw.create', function () {
-					var polygon = draw.getAll().features[0];
-					_this2.props.updateSettings({ boundingFeatures: polygon });
+					_this2.updateBoundingFeature(draw);
+				});
+				map.on('draw.delete', function () {
+					_this2.updateBoundingFeature(draw);
+				});
+				map.on('draw.update', function () {
+					_this2.updateBoundingFeature(draw);
 				});
 				map.on('load', function () {
 					return _this2._mapLoaded = true;
 				});
 				this.setState({ map: map });
+			}
+		}, {
+			key: 'updateBoundingFeature',
+			value: function updateBoundingFeature(draw) {
+				var polygon = draw.getAll().features[0] || null;
+				this.props.updateSettings({ boundingFeature: polygon });
 			}
 		}, {
 			key: 'componentWillReceiveProps',
@@ -22187,7 +22198,6 @@
 	};
 
 	var addPoints = function addPoints(points, map) {
-		console.log(points);
 		if (points.length < 1) return false;
 		var geoJSON = getGeoJSON(points, function (i) {
 			return [i.lng, i.lat];
