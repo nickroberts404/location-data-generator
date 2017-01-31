@@ -22145,6 +22145,8 @@
 				});
 				map.addControl(draw);
 				map.on('draw.create', function () {
+					var allFeatures = draw.getAll().features;
+					if (allFeatures.length > 1) draw.delete(allFeatures[0].id);
 					_this2.updateBoundingFeature(draw);
 				});
 				map.on('draw.delete', function () {

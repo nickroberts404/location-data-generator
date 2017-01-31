@@ -29,6 +29,8 @@ export default class MainMap extends Component {
 		});
 		map.addControl(draw);
 		map.on('draw.create', () => {
+			var allFeatures = draw.getAll().features
+			if(allFeatures.length > 1) draw.delete(allFeatures[0].id);
 			this.updateBoundingFeature(draw);
 		});
 		map.on('draw.delete', () => {
