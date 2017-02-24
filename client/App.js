@@ -6,14 +6,14 @@ import 'whatwg-fetch';
 export default class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {settings: {}, nodes: [] }
+		this.state = {settings: {}, nodes: {} }
 	}
 
 	componentDidMount() {
-		fetch('/api')
+		fetch('/api?geojson=true')
 			.then(res => res.json())
 			.then(res => this.setState({nodes: res}))
-		fetch('/settings')
+		fetch('/settings?geojson=true')
 			.then(res => res.json())
 			.then(res => this.setState({settings: res}))
 	}
@@ -25,7 +25,7 @@ export default class App extends Component {
 
 	resetData() {
 		const { settings } = this.state;
-		fetch('/settings', {
+		fetch('/settings?geojson=true', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

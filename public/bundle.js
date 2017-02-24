@@ -22008,7 +22008,7 @@
 
 			var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-			_this.state = { settings: {}, nodes: [] };
+			_this.state = { settings: {}, nodes: {} };
 			return _this;
 		}
 
@@ -22017,12 +22017,12 @@
 			value: function componentDidMount() {
 				var _this2 = this;
 
-				fetch('/api').then(function (res) {
+				fetch('/api?geojson=true').then(function (res) {
 					return res.json();
 				}).then(function (res) {
 					return _this2.setState({ nodes: res });
 				});
-				fetch('/settings').then(function (res) {
+				fetch('/settings?geojson=true').then(function (res) {
 					return res.json();
 				}).then(function (res) {
 					return _this2.setState({ settings: res });
@@ -22042,7 +22042,7 @@
 
 				var settings = this.state.settings;
 
-				fetch('/settings', {
+				fetch('/settings?geojson=true', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
@@ -22195,15 +22195,12 @@
 
 
 	MainMap.propTypes = {
-		nodes: _react.PropTypes.array.isRequired,
+		nodes: _react.PropTypes.object.isRequired,
 		updateSettings: _react.PropTypes.func
 	};
 
 	var addPoints = function addPoints(points, map) {
-		if (points.length < 1) return false;
-		var geoJSON = getGeoJSON(points, function (i) {
-			return [i.lng, i.lat];
-		});
+		if (!points) return false;
 		// Remove old layers
 		if (map.getSource('points')) map.removeSource('points');
 		if (map.getLayer('points')) map.removeLayer('points');
@@ -22211,7 +22208,7 @@
 		var circleRadius = { stops: [[8, 3], [11, 7], [16, 15]] };
 		map.addSource('points', {
 			type: 'geojson',
-			data: geoJSON
+			data: points
 		});
 		map.addLayer({
 			id: 'points',
@@ -22222,22 +22219,6 @@
 				'circle-color': '#1eaedb'
 			}
 		});
-	};
-
-	var getGeoJSON = function getGeoJSON(items, getCoordinates) {
-		var geo = {
-			type: "FeatureCollection"
-		};
-		geo.features = items.map(function (i) {
-			return {
-				type: "Feature",
-				geometry: {
-					type: "Point",
-					coordinates: getCoordinates(i)
-				}
-			};
-		});
-		return geo;
 	};
 
 /***/ },

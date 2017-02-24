@@ -64,13 +64,12 @@ export default class MainMap extends Component {
 }
 
 MainMap.propTypes = {
-	nodes: PropTypes.array.isRequired,
+	nodes: PropTypes.object.isRequired,
 	updateSettings: PropTypes.func
 }
 
 const addPoints = (points, map) => {
-	if(points.length < 1) return false;
-	const geoJSON = getGeoJSON(points, i => [i.lng, i.lat]);
+	if(!points) return false;
 	// Remove old layers
 	if(map.getSource('points')) map.removeSource('points');
 	if(map.getLayer('points')) map.removeLayer('points');
@@ -78,7 +77,7 @@ const addPoints = (points, map) => {
 	const circleRadius = {stops: [[8, 3], [11, 7], [16, 15]]};
 	map.addSource('points', {
 		type: 'geojson',
-		data: geoJSON,
+		data: points,
 	});
 	map.addLayer({
 		id: 'points',
@@ -89,18 +88,4 @@ const addPoints = (points, map) => {
 			'circle-color': '#1eaedb',
 		}
 	})
-}
-
-const getGeoJSON = (items, getCoordinates) => {
-	let geo = {
-		type: "FeatureCollection"
-	}
-	geo.features = items.map(i => ({
-		type: "Feature",
-		geometry: {
-			type: "Point",
-			coordinates: getCoordinates(i),
-		}
-	}))
-	return geo;
 }

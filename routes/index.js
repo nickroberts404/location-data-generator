@@ -26,7 +26,7 @@ router.post('/settings', (req, res) => {
 	settings = Object.assign(settings, req.body);
 	data = locationBrewer.getCoordinateArray(settings.nodeCount, settings.boundingFeature);
 	res.send({
-		nodes: data,
+		nodes: req.query.geojson ? locationBrewer.getFeatureCollection(data) : data,
 		settings: settings
 	});
 })
