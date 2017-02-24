@@ -22,6 +22,7 @@ router.get('/settings', (req, res) => {
 
 router.post('/settings', (req, res) => {
 	settings = Object.assign(settings, req.body);
+	console.log(req.body);
 	data = locationBrewer.getCoordinateArray(settings.nodeCount, settings.boundingFeature);
 	res.send({
 		nodes: data,

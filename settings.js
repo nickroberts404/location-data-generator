@@ -5,7 +5,7 @@ var program = require('commander');
 
 const defaults = {
 	nodeCount: 500,
-	boundingFeature: [[90, -180],[-90, 180]],
+	boundingFeature: null, // equivalent to "the whole earth!"
 }
 
 var parseBBox = (i) => {
@@ -20,4 +20,6 @@ program
 	.option('-b, --boundingFeature <b>', 'The bounding box, NW to SE <lat1,lng1,lat2,lng2>', parseBBox, defaults.boundingFeature)
 	.parse(process.argv);
 
-module.exports = Object.assign({}, defaults, program);
+// Perform a union of defaults and programs attributes
+const p = Object.keys(defaults).reduce((o, k) => Object.assign(o, {[k]: program[k]}), {})
+module.exports = Object.assign({}, defaults, p);
