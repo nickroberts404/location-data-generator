@@ -15,17 +15,17 @@
     "location-data-generator": "index.js"
   },
   "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^0.16.1",
+    "body-parser": "^1.15.2",
+    "commander": "^2.9.0",
+    "deep-equal": "^1.0.1",
+    "express": "^4.14.0",
+    "mapbox-gl": "^0.31.0",
+    "morgan": "^1.7.0",
+    "random-points-on-polygon": "0.0.4",
     "react": "^15.0.2",
     "react-dom": "^15.0.2",
-    "express": "^4.14.0",
-    "morgan": "^1.7.0",
-    "body-parser": "^1.15.2",
-    "deep-equal": "^1.0.1",
-    "whatwg-fetch": "^2.0.2",
-    "commander": "^2.9.0",
-    "mapbox-gl": "^0.31.0",
-    "@mapbox/mapbox-gl-draw": "^0.16.1",
-    "random-points-on-polygon": "0.0.4",
+    "whatwg-fetch": "^2.0.2"
   },
   "devDependencies": {
     "webpack": "^1.13.0",
