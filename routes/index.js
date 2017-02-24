@@ -5,15 +5,17 @@ var router = require('express').Router();
 var settings = require('../settings');
 
 //Data initialization
-var data = locationBrewer.getCoordinateArray(settings.nodes, settings.boundingFeature);
-
+var data = locationBrewer.getCoordinateArray(settings.nodeCount, settings.boundingFeature);
+console.log(data);
  // Routes
 router.get('/', (req, res) => {
 	res.send('index.html');
 });
 
 router.get('/api', (req, res) => {
-	res.send(data);
+	console.log(req.query);
+	if (req.query.geojson) res.send(locationBrewer.getFeatureCollection(data));
+	else res.send(data);
 });
 
 router.get('/settings', (req, res) => {
@@ -22,7 +24,6 @@ router.get('/settings', (req, res) => {
 
 router.post('/settings', (req, res) => {
 	settings = Object.assign(settings, req.body);
-	console.log(req.body);
 	data = locationBrewer.getCoordinateArray(settings.nodeCount, settings.boundingFeature);
 	res.send({
 		nodes: data,

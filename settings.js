@@ -16,8 +16,8 @@ var parseBBox = (i) => {
 
 program
 	.version('0.0.1')
-	.option('-n, --nodeCount <n>', 'The amount of nodes <int>', i => parseInt(i), defaults.nodeCount)
-	.option('-b, --boundingFeature <b>', 'The bounding box, NW to SE <lat1,lng1,lat2,lng2>', parseBBox, defaults.boundingFeature)
+	.option('-n, --node-count <n>', 'The amount of nodes <int>', i => parseInt(i), defaults.nodeCount)
+	.option('-b, --bounding-feature <b>', 'The bounding box, NW to SE <lat1,lng1,lat2,lng2>', parseBBox, defaults.boundingFeature)
 	.parse(process.argv);
 
 // Perform a union of defaults and programs attributes
