@@ -6,14 +6,13 @@ var settings = require('../settings');
 
 //Data initialization
 var data = locationBrewer.getCoordinateArray(settings.nodeCount, settings.boundingFeature);
-console.log(data);
+
  // Routes
 router.get('/', (req, res) => {
 	res.send('index.html');
 });
 
 router.get('/api', (req, res) => {
-	console.log(req.query);
 	if (req.query.geojson) res.send(locationBrewer.getFeatureCollection(data));
 	else res.send(data);
 });
