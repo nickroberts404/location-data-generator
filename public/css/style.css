@@ -19,3 +19,17 @@ html, body { height: 100%; }
 .mapboxgl-canvas {
 	outline: none;
 }
+.mapboxgl-ctrl-top-right {
+	right: 300px;
+}
+/* Inputs */
+.number-input-group {
+	display: flex;
+	/*align-items: center;*/
+}
+.number-input-label {
+	margin-right: 10px;
+}
+.number-input {
+	width: 100px;
+}
