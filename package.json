@@ -7,7 +7,7 @@
   "scripts": {
     "develop": "webpack --watch",
     "build": "webpack -p",
-    "test": "mocha"
+    "test": "mocha --compilers js:babel-core/register"
   },
   "repository": "https://github.com/nickroberts404/mirage.git",
   "author": "nickroberts404 <nickroberts404@gmail.com>",

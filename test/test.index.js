@@ -1,5 +1,5 @@
-const expect = require('chai').expect;
-const mirage = require('../dist/mirage.js');
+import { expect } from 'chai';
+import * as mirage from '../lib/index.js';
 
 describe('mirage.js', () => {
 	describe('conjure()', () => {

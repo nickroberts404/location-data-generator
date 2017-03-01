@@ -1,3 +1,6 @@
+import { expect } from 'chai';
+import * as locations from '../lib/locations.js';
+
 describe('locations.js', () => {
 	describe('randomPoints()', () => {
 		it('Returns 1000', () => {
