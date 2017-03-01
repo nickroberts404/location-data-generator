@@ -77,11 +77,11 @@ describe('locations.js', () => {
 		}
 		it('Stays within lower bound', () => {
 			const resultMin = min(results);
-			expect(resultMin).to.be.above(-50);
+			expect(resultMin).to.be.above(-51);
 		})
 		it('Stays within upper bound', () => {
 			const resultMax = max(results);
-			expect(resultMax).to.be.below(50);
+			expect(resultMax).to.be.below(51);
 		})
 	})
 })

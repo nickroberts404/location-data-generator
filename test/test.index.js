@@ -9,7 +9,6 @@ describe('mirage.js', () => {
 		})
 		it('Allows custom point counts', () => {
 			const result = mirage.conjure({count: 589});
-			console.log(result[1])
 			expect(result).to.have.lengthOf(589);
 		})
 	})
@@ -19,8 +18,8 @@ describe('mirage.js', () => {
 			expect(result).to.have.lengthOf(0);
 		})
 		it('Returns valid geoJSON', () => {
-			const result = mirage.pointsToGeoJSON();
-			expect(result).to.have.lengthOf(0);
+			const result = mirage.pointsToGeoJSON([{lat: 75.12979999999999, lng: 141.9685}]);
+			expect(result[0]).to.contain.all.keys(['type', 'geometry']);
 		})
 	})
 })
