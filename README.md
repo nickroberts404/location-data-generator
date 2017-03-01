@@ -9,7 +9,8 @@ You can also limit the extent of your population by bounding box or bounding pol
 import { conjure } from 'mirage';
 options = {
 	bound: null, // A box, or a geoJson polygon. Defaults to whole planet,
-	count: 100 // The amount of points to return
+	count: 100, // The amount of points to return
+	geojson: false // Return points as a geojson feature set.
 };
 var population = conjure(objects); // [{lat: -13.667, lng: 48.956}, ...]
 ```

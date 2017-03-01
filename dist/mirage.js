@@ -82,9 +82,60 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__locations_js__ = __webpack_require__(1);
 /* harmony export (immutable) */ __webpack_exports__["conjure"] = conjure;
-function conjure() {
-	return 1000;
+
+
+const defaults = {
+	bound: [[90, -180],[-90, 180]], // A bounding box representing whole earth
+	count: 100, // The amount of points to return
+	geojson: false // Return points as an array of coordinates instead of a geojson feature set
+}
+
+function conjure(options) {
+	options = Object.assign({}, defaults, options); // Merge options and defaults, declared options taking priority
+	return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__locations_js__["a" /* randomPoints */])(bound, count);
+}
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = randomPoints;
+/* unused harmony export getPointsInPolygon */
+/* unused harmony export getPointsInBBox */
+/* unused harmony export randomInRange */
+
+
+function randomPoints(bound, count) {
+	if(Array.isArray(bound)) return getPointsInBBox(bound, count)
+	else return getPointsInPolygon(bound, count);
+}
+
+function getPointsInPolygon(bound, count) {
+		const points = rand(count, bound);
+		return points.map(p => ({lat: p.geometry.coordinates[1], lng: p.geometry.coordinates[0]}));
+}
+
+function getPointsInBBox(bbox, count) {
+	const arr = []
+	for (var i = 0; i < count; i++) {
+		arr.push({
+			lat: randomInRange(bbox[1][0], bbox[0][0], 180, 4),
+			lng: randomInRange(bbox[0][1], bbox[1][1], 360, 4),
+		});
+	}
+	return arr;
+}
+
+// s is the # of values before the cycle repeats (the earth being a sphere).
+function randomInRange(from, to, s, fixed) {
+	from+= s/2;
+	to+= s/2;
+	if(to < from) to+= s;
+    return ((Math.random() * (to - from) + from).toFixed(fixed) * 1) % s - s/2;
+    // .toFixed() returns string, so ' * 1' is a trick to convert to number
 }
 
 /***/ })

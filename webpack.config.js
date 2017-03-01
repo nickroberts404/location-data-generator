@@ -1,7 +1,6 @@
 const path = require('path');
 
 module.exports = {
-	devtool: 'cheap-module-source-map',
 	entry: './lib/index',
 	output: {
 		filename: 'mirage.js',
@@ -14,5 +13,6 @@ module.exports = {
 		rules: [
 			{test: /\.js$/, loader: 'babel-loader', include: './lib'},
 		]
-	}
+	},
+	devtool: 'cheap-module-source-map'
 }
