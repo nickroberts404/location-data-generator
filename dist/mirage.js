@@ -87,7 +87,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 const defaults = {
-	bound: [[90, -180],[-90, 180]], // A bounding box representing whole earth
+	bound: [90, -180, -90, 180], // A bounding box representing whole earth
 	count: 100, // The amount of points to return
 	geojson: false // Return points as an array of coordinates instead of a geojson feature set
 }
@@ -111,7 +111,8 @@ function conjure(options) {
 
 
 function randomPoints(bound, count) {
-	if(Array.isArray(bound)) return getPointsInBBox(bound, count)
+	if (!count || !bound) return [];
+	else if(Array.isArray(bound)) return getPointsInBBox(bound, count)
 	else return getPointsInPolygon(bound, count);
 }
 
@@ -120,19 +121,21 @@ function getPointsInPolygon(bound, count) {
 		return points.map(p => ({lat: p.geometry.coordinates[1], lng: p.geometry.coordinates[0]}));
 }
 
-function getPointsInBBox(bbox, count) {
+function getPointsInBBox(bound, count) {
 	const arr = []
 	for (var i = 0; i < count; i++) {
 		arr.push({
-			lat: randomInRange(bbox[1][0], bbox[0][0], 180, 4),
-			lng: randomInRange(bbox[0][1], bbox[1][1], 360, 4),
+			lat: randomInRange(bound[2], bound[0], 180, 4),
+			lng: randomInRange(bound[1], bound[3], 360, 4),
 		});
 	}
 	return arr;
 }
 
 // s is the # of values before the cycle repeats (the earth being a sphere).
-function randomInRange(from, to, s, fixed) {
+// given an s of x, this will return a function between -x/2 and x/2.
+// It seems confusing now, but it was created for using with lat, lng.
+function randomInRange(from, to, s, fixed=1) {
 	from+= s/2;
 	to+= s/2;
 	if(to < from) to+= s;
@@ -438,21 +441,21 @@ module.exports = function(features){
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+var invariant = __webpack_require__(9);
 
 // http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 // modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
 // which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
 
 /**
- * Takes a {@link Point} feature and a {@link Polygon} feature and determines if the Point resides inside the Polygon. The Polygon can
- * be convex or concave. The function accepts any valid Polygon or {@link MultiPolygon}
- * and accounts for holes.
+ * Takes a {@link Point} and a {@link Polygon} or {@link MultiPolygon} and determines if the point resides inside the polygon. The polygon can
+ * be convex or concave. The function accounts for holes.
  *
- * @module turf/inside
- * @category joins
- * @param {Point} point a Point feature
- * @param {Polygon} polygon a Polygon feature
+ * @name inside
+ * @param {Feature<Point>} point input point
+ * @param {Feature<(Polygon|MultiPolygon)>} polygon input polygon or multipolygon
  * @return {Boolean} `true` if the Point is inside the Polygon; `false` if the Point is not inside the Polygon
  * @example
  * var pt1 = {
@@ -503,47 +506,42 @@ module.exports = function(features){
  * var isInside2 = turf.inside(pt2, poly);
  * //=isInside2
  */
-module.exports = function(point, polygon) {
-  var polys = polygon.geometry.coordinates;
-  var pt = [point.geometry.coordinates[0], point.geometry.coordinates[1]];
-  // normalize to multipolygon
-  if(polygon.geometry.type === 'Polygon') polys = [polys];
+module.exports = function input(point, polygon) {
+    var pt = invariant.getCoord(point);
+    var polys = polygon.geometry.coordinates;
+    // normalize to multipolygon
+    if (polygon.geometry.type === 'Polygon') polys = [polys];
 
-  var insidePoly = false;
-  var i = 0;
-  while (i < polys.length && !insidePoly) {
-    // check if it is in the outer ring first
-    if(inRing(pt, polys[i][0])) {
-      var inHole = false;
-      var k = 1;
-      // check for the point in any of the holes
-      while(k < polys[i].length && !inHole) {
-        if(inRing(pt, polys[i][k])) {
-          inHole = true;
+    for (var i = 0, insidePoly = false; i < polys.length && !insidePoly; i++) {
+        // check if it is in the outer ring first
+        if (inRing(pt, polys[i][0])) {
+            var inHole = false;
+            var k = 1;
+            // check for the point in any of the holes
+            while (k < polys[i].length && !inHole) {
+                if (inRing(pt, polys[i][k])) {
+                    inHole = true;
+                }
+                k++;
+            }
+            if (!inHole) insidePoly = true;
         }
-        k++;
-      }
-      if(!inHole) insidePoly = true;
     }
-    i++;
-  }
-  return insidePoly;
-}
+    return insidePoly;
+};
 
 // pt is [x,y] and ring is [[x,y], [x,y],..]
-function inRing (pt, ring) {
-  var isInside = false;
-  for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-    var xi = ring[i][0], yi = ring[i][1];
-    var xj = ring[j][0], yj = ring[j][1];
-    
-    var intersect = ((yi > pt[1]) != (yj > pt[1]))
-        && (pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi);
-    if (intersect) isInside = !isInside;
-  }
-  return isInside;
+function inRing(pt, ring) {
+    var isInside = false;
+    for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        var xi = ring[i][0], yi = ring[i][1];
+        var xj = ring[j][0], yj = ring[j][1];
+        var intersect = ((yi > pt[1]) !== (yj > pt[1])) &&
+        (pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi);
+        if (intersect) isInside = !isInside;
+    }
+    return isInside;
 }
-
 
 
 /***/ }),
@@ -746,6 +744,105 @@ module.exports = function(type, count, options) {
             throw new Error('Unknown type given: valid options are points and polygons');
     }
 };
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+/**
+ * Unwrap a coordinate from a Feature with a Point geometry, a Point
+ * geometry, or a single coordinate.
+ *
+ * @param {*} obj any value
+ * @returns {Array<number>} a coordinate
+ */
+function getCoord(obj) {
+    if (Array.isArray(obj) &&
+        typeof obj[0] === 'number' &&
+        typeof obj[1] === 'number') {
+        return obj;
+    } else if (obj) {
+        if (obj.type === 'Feature' &&
+            obj.geometry &&
+            obj.geometry.type === 'Point' &&
+            Array.isArray(obj.geometry.coordinates)) {
+            return obj.geometry.coordinates;
+        } else if (obj.type === 'Point' &&
+            Array.isArray(obj.coordinates)) {
+            return obj.coordinates;
+        }
+    }
+    throw new Error('A coordinate, feature, or point geometry is required');
+}
+
+/**
+ * Enforce expectations about types of GeoJSON objects for Turf.
+ *
+ * @alias geojsonType
+ * @param {GeoJSON} value any GeoJSON object
+ * @param {string} type expected GeoJSON type
+ * @param {string} name name of calling function
+ * @throws {Error} if value is not the expected type.
+ */
+function geojsonType(value, type, name) {
+    if (!type || !name) throw new Error('type and name required');
+
+    if (!value || value.type !== type) {
+        throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + value.type);
+    }
+}
+
+/**
+ * Enforce expectations about types of {@link Feature} inputs for Turf.
+ * Internally this uses {@link geojsonType} to judge geometry types.
+ *
+ * @alias featureOf
+ * @param {Feature} feature a feature with an expected geometry type
+ * @param {string} type expected GeoJSON type
+ * @param {string} name name of calling function
+ * @throws {Error} error if value is not the expected type.
+ */
+function featureOf(feature, type, name) {
+    if (!name) throw new Error('.featureOf() requires a name');
+    if (!feature || feature.type !== 'Feature' || !feature.geometry) {
+        throw new Error('Invalid input to ' + name + ', Feature with geometry required');
+    }
+    if (!feature.geometry || feature.geometry.type !== type) {
+        throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + feature.geometry.type);
+    }
+}
+
+/**
+ * Enforce expectations about types of {@link FeatureCollection} inputs for Turf.
+ * Internally this uses {@link geojsonType} to judge geometry types.
+ *
+ * @alias collectionOf
+ * @param {FeatureCollection} featurecollection a featurecollection for which features will be judged
+ * @param {string} type expected GeoJSON type
+ * @param {string} name name of calling function
+ * @throws {Error} if value is not the expected type.
+ */
+function collectionOf(featurecollection, type, name) {
+    if (!name) throw new Error('.collectionOf() requires a name');
+    if (!featurecollection || featurecollection.type !== 'FeatureCollection') {
+        throw new Error('Invalid input to ' + name + ', FeatureCollection required');
+    }
+    for (var i = 0; i < featurecollection.features.length; i++) {
+        var feature = featurecollection.features[i];
+        if (!feature || feature.type !== 'Feature' || !feature.geometry) {
+            throw new Error('Invalid input to ' + name + ', Feature with geometry required');
+        }
+        if (!feature.geometry || feature.geometry.type !== type) {
+            throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + feature.geometry.type);
+        }
+    }
+}
+
+module.exports.geojsonType = geojsonType;
+module.exports.collectionOf = collectionOf;
+module.exports.featureOf = featureOf;
+module.exports.getCoord = getCoord;
 
 
 /***/ })
