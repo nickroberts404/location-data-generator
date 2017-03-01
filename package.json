@@ -6,9 +6,8 @@
   "module": "lib/index.js",
   "scripts": {
     "develop": "webpack --watch",
-    "build": "webpack",
-    "test": "mocha",
-    "build-tests": "webpack test/**/*.js test-bundle.js"
+    "build": "webpack -p",
+    "test": "mocha"
   },
   "repository": "https://github.com/nickroberts404/mirage.git",
   "author": "nickroberts404 <nickroberts404@gmail.com>",
