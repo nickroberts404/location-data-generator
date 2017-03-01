@@ -3,9 +3,13 @@ import * as mirage from '../lib/index.js';
 
 describe('mirage.js', () => {
 	describe('conjure()', () => {
-		it('Returns 1000', () => {
+		it('Defaults to 100 points', () => {
 			const result = mirage.conjure();
-			expect(result).to.equal(1000);
+			expect(result).to.have.lengthOf(100);
+		})
+		it('Allows custom point counts', () => {
+			const result = mirage.conjure({count: 589});
+			expect(result).to.have.lengthOf(589);
 		})
 	})
 })
