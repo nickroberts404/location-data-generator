@@ -2,17 +2,17 @@
 Mirage is a JavaScript library for mocking populations. It exposes methods that can be used to generate random location data, 
 in the form of lat/lng objects. (`{lat: -13.667, lng: 48.956}`)
 
-You can also limit the extent of your population by bounding box or bounding polygons.
+You can also limit the extent of your population by bounding box or bounding polygon.
 
 ### `conjure(options)`
 ```js
 import { conjure } from 'mirage';
 options = {
-	bound: null, // A box, or a geoJson polygon. Defaults to whole planet,
+	bound: [90, -180, -90, 180], // A bounding box, or a geoJSON polygon. Defaults to whole planet,
 	count: 100, // The amount of points to return
-	geojson: false // Return points as a geojson feature set.
+	geojson: false // Return points as a geojson features.
 };
-var population = conjure(objects); // [{lat: -13.667, lng: 48.956}, ...]
+var population = conjure(options); // [{lat: -13.667, lng: 48.956}, ...]
 ```
 
 ### Future Plans
