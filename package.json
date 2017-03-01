@@ -19,5 +19,8 @@
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
     "webpack": "^2.2.1"
+  },
+  "dependencies": {
+    "random-points-on-polygon": "^0.0.4"
   }
 }
