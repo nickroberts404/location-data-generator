@@ -72,11 +72,10 @@
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["conjure"] = conjure;
 function conjure() {
 	return 1000;
 }
-
-/* harmony default export */ __webpack_exports__["default"] = conjure;
 
 /***/ })
 /******/ ]);
