@@ -2,7 +2,8 @@
   "name": "mirage",
   "version": "1.0.0",
   "description": "A library for creating fake populations.",
-  "main": "lib/index.js",
+  "main": "dist/mirage.js",
+  "module": "lib/index.js",
   "scripts": {
     "develop": "webpack --watch",
     "build": "webpack",
