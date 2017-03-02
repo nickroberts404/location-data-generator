@@ -3,15 +3,15 @@ const path = require('path');
 module.exports = {
 	entry: './lib/index',
 	output: {
-		filename: 'mirage.js',
+		filename: 'mirageo.js',
 		path: path.resolve(__dirname, 'dist'),
-		library: 'mirage',
+		library: 'mirageo',
 		libraryTarget: 'umd',
-        sourceMapFilename: 'mirage.map'
+        sourceMapFilename: 'mirageo.map'
 	},
 	module: {
 		rules: [
-			{test: /\.js$/, loader: 'babel-loader', include: './lib'},
+			{test: /\.js$/, loader: 'babel-loader', exclude: './node_modules'},
 		]
 	},
 	devtool: 'cheap-module-source-map'
