@@ -19,5 +19,3 @@ var population = conjure(options); // [{lat: -13.667, lng: 48.956}, ...]
 
 ### Future Plans
 I'd like to create a stateful Mirageo object as well, and allow it to alter its state periodically to create motion. Users could subscribe to an event, or poll the object when they need to. This would mimick the movement of people/ships/anything.
-
-I also have plans for mirageo-server, which would spin a small local server to serve the results over http, and even a map interface to draw the bounds/visualize the populations.
