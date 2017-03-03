@@ -102,7 +102,6 @@ function randomPoints(bound, count) {
 }
 
 function getPointsInPolygon(bound, count) {
-	console.log('Doing polygon stuff', bound);
 	var points = (0, _randomPointsOnPolygon2.default)(count, bound);
 	return points.map(function (p) {
 		return { lat: p.geometry.coordinates[1], lng: p.geometry.coordinates[0] };
