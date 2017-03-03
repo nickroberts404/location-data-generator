@@ -1,2 +1,801 @@
-!function(t,e){"object"==typeof exports&&"object"==typeof module?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.mirageo=e():t.mirageo=e()}(this,function(){return function(t){function e(r){if(n[r])return n[r].exports;var o=n[r]={i:r,l:!1,exports:{}};return t[r].call(o.exports,o,o.exports,e),o.l=!0,o.exports}var n={};return e.m=t,e.c=n,e.i=function(t){return t},e.d=function(t,n,r){e.o(t,n)||Object.defineProperty(t,n,{configurable:!1,enumerable:!0,get:r})},e.n=function(t){var n=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(n,"a",n),n},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=8)}([function(t,e,n){"use strict";function r(t){return t&&t.__esModule?t:{default:t}}function o(t,e){return e&&t?Array.isArray(t)?i(t,e):u(t,e):[]}function u(t,e){return(0,f.default)(e,t).map(function(t){return{lat:t.geometry.coordinates[1],lng:t.geometry.coordinates[0]}})}function i(t,e){for(var n=[],r=0;r<e;r++)n.push({lat:a(t[2],t[0],180,4),lng:a(t[1],t[3],360,4)});return n}function a(t,e,n){var r=arguments.length>3&&void 0!==arguments[3]?arguments[3]:1;return t+=n/2,e+=n/2,e<t&&(e+=n),1*(Math.random()*(e-t)+t).toFixed(r)%n-n/2}Object.defineProperty(e,"__esModule",{value:!0}),e.randomPoints=o,e.getPointsInPolygon=u,e.getPointsInBBox=i,e.randomInRange=a;var c=n(2),f=r(c)},function(t,e,n){"use strict";function r(t){return t?s(t):[a(),c()]}function o(t){return function(e,n){return[e[0]+t[0],e[1]+t[1]]}}function u(){return Math.random()-.5}function a(){return 360*u()}function c(){return 180*u()}function f(t){return{type:"Point",coordinates:t||[a(),c()]}}function s(t){return[Math.random()*(t[2]-t[0])+t[0],Math.random()*(t[3]-t[1])+t[1]]}function p(t){return{type:"Polygon",coordinates:t}}function l(t){return{type:"Feature",geometry:t,properties:{}}}function y(t){return{type:"FeatureCollection",features:t}}t.exports=function(){throw new Error("call .point() or .polygon() instead")},t.exports.position=r,t.exports.point=function(t,e){var n=[];for(i=0;i<t;i++)n.push(l(e?f(r(e)):f()));return y(n)},t.exports.polygon=function(t,e,n,u){function a(t,e,n){n[e]=e>0?t+n[e-1]:t}function c(t,e){t=2*t*Math.PI/g[g.length-1];var r=Math.random();s.push([r*n*Math.sin(t),r*n*Math.cos(t)])}"number"!=typeof e&&(e=10),"number"!=typeof n&&(n=10);var f=[];for(i=0;i<t;i++){var s=[],g=Array.apply(null,new Array(e+1)).map(Math.random);g.forEach(a),g.forEach(c),s[s.length-1]=s[0],s=s.map(o(r(u))),f.push(l(p([s])))}return y(f)}},function(t,e,n){"use strict";function r(t,e,n,c){if("boolean"==typeof n&&(c=n,n={}),t<1)return new Error("Number must be >= 1");if("Feature"!==e.type)return new Error("Polygon parameter must be a Feature<(Polygon|MultiPolygon)>");if(this instanceof r)return new r(t,e,n);n=n||{},c=c||!1;for(var f=[],s=o(e),p=Math.round(parseFloat(t)),l=0;l<=p;l++){if(l===p)return c?u(f):f;var y=a("point",1,{bbox:s});i(y.features[0],e)===!1&&(l=--l),i(y.features[0],e)===!0&&(y.features[0].properties=n,f.push(y.features[0]))}}var o=n(4),u=n(5),i=n(3),a=n(7);t.exports=r},function(t,e,n){"use strict";function r(t,e){for(var n=!1,r=0,o=e.length-1;r<e.length;o=r++){var u=e[r][0],i=e[r][1],a=e[o][0],c=e[o][1];i>t[1]!=c>t[1]&&t[0]<(a-u)*(t[1]-i)/(c-i)+u&&(n=!n)}return n}t.exports=function(t,e){var n=e.geometry.coordinates,o=[t.geometry.coordinates[0],t.geometry.coordinates[1]];"Polygon"===e.geometry.type&&(n=[n]);for(var u=!1,i=0;i<n.length&&!u;){if(r(o,n[i][0])){for(var a=!1,c=1;c<n[i].length&&!a;)r(o,n[i][c])&&(a=!0),c++;a||(u=!0)}i++}return u}},function(t,e,n){"use strict";var r=n(6).coordEach;t.exports=function(t){var e=[1/0,1/0,-(1/0),-(1/0)];return r(t,function(t){e[0]>t[0]&&(e[0]=t[0]),e[1]>t[1]&&(e[1]=t[1]),e[2]<t[0]&&(e[2]=t[0]),e[3]<t[1]&&(e[3]=t[1])}),e}},function(t,e,n){"use strict";t.exports=function(t){return{type:"FeatureCollection",features:t}}},function(t,e,n){"use strict";function r(t,e,n){var r,o,u,i,a,c,f,s,p,y=0,g="FeatureCollection"===t.type,d="Feature"===t.type,h=g?t.features.length:1;for(r=0;r<h;r++)for(s=g?t.features[r].geometry:d?t.geometry:t,p="GeometryCollection"===s.type,c=p?s.geometries.length:1,i=0;i<c;i++)if(a=p?s.geometries[i]:s,f=a.coordinates,y=!n||"Polygon"!==a.type&&"MultiPolygon"!==a.type?0:1,"Point"===a.type)e(f);else if("LineString"===a.type||"MultiPoint"===a.type)for(o=0;o<f.length;o++)e(f[o]);else if("Polygon"===a.type||"MultiLineString"===a.type)for(o=0;o<f.length;o++)for(u=0;u<f[o].length-y;u++)e(f[o][u]);else{if("MultiPolygon"!==a.type)throw new Error("Unknown Geometry Type");for(o=0;o<f.length;o++)for(u=0;u<f[o].length;u++)for(l=0;l<f[o][u].length-y;l++)e(f[o][u][l])}}function o(t,e,n,o){return r(t,function(t){n=e(n,t)},o),n}function u(t,e){var n;switch(t.type){case"FeatureCollection":for(features=t.features,n=0;n<t.features.length;n++)e(t.features[n].properties);break;case"Feature":e(t.properties)}}function i(t,e,n){return u(t,function(t){n=e(n,t)}),n}t.exports.coordEach=r,t.exports.coordReduce=o,t.exports.propEach=u,t.exports.propReduce=i},function(t,e,n){"use strict";var r=n(1);t.exports=function(t,e,n){switch(n=n||{},e=e||1,t){case"point":case"points":case void 0:return r.point(e,n.bbox);case"polygon":case"polygons":return r.polygon(e,n.num_vertices,n.max_radial_length,n.bbox);default:throw new Error("Unknown type given: valid options are points and polygons")}}},function(t,e,n){"use strict";function r(t){t=Object.assign({},i,t);var e=(0,u.randomPoints)(t.bound,t.count);return t.geojson&&(e=o(e)),e}function o(){return(arguments.length>0&&void 0!==arguments[0]?arguments[0]:[]).map(function(t){return{type:"Feature",geometry:{type:"Point",coordinates:[t.lng,t.lat]}}})}Object.defineProperty(e,"__esModule",{value:!0}),e.conjure=r,e.pointsToGeoJSON=o;var u=n(0),i={bound:[90,-180,-90,180],count:100,geojson:!1}}])});
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["mirageo"] = factory();
+	else
+		root["mirageo"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.randomPoints = randomPoints;
+exports.getPointsInPolygon = getPointsInPolygon;
+exports.getPointsInBBox = getPointsInBBox;
+exports.randomInRange = randomInRange;
+
+var _randomPointsOnPolygon = __webpack_require__(2);
+
+var _randomPointsOnPolygon2 = _interopRequireDefault(_randomPointsOnPolygon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function randomPoints(bound, count) {
+	if (!count || !bound) return [];else if (Array.isArray(bound)) return getPointsInBBox(bound, count);else return getPointsInPolygon(bound, count);
+}
+
+function getPointsInPolygon(bound, count) {
+	console.log('Doing polygon stuff', bound);
+	var points = (0, _randomPointsOnPolygon2.default)(count, bound);
+	return points.map(function (p) {
+		return { lat: p.geometry.coordinates[1], lng: p.geometry.coordinates[0] };
+	});
+}
+
+function getPointsInBBox(bound, count) {
+	var arr = [];
+	for (var i = 0; i < count; i++) {
+		arr.push({
+			lat: randomInRange(bound[2], bound[0], 180, 4),
+			lng: randomInRange(bound[1], bound[3], 360, 4)
+		});
+	}
+	return arr;
+}
+
+// s is the # of values before the cycle repeats (the earth being a sphere).
+// given an s of x, this will return a function between -x/2 and x/2.
+// It seems confusing now, but it was created for using with lat, lng.
+function randomInRange(from, to, s) {
+	var fixed = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+
+	from += s / 2;
+	to += s / 2;
+	if (to < from) to += s;
+	return (Math.random() * (to - from) + from).toFixed(fixed) * 1 % s - s / 2;
+	// .toFixed() returns string, so ' * 1' is a trick to convert to number
+}
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function () {
+    throw new Error('call .point() or .polygon() instead');
+};
+
+function position(bbox) {
+    if (bbox) return coordInBBBOX(bbox);else return [lon(), lat()];
+}
+
+module.exports.position = position;
+
+module.exports.point = function (count, bbox) {
+    var features = [];
+    for (i = 0; i < count; i++) {
+        features.push(feature(bbox ? point(position(bbox)) : point()));
+    }
+    return collection(features);
+};
+
+module.exports.polygon = function (count, num_vertices, max_radial_length, bbox) {
+    if (typeof num_vertices !== 'number') num_vertices = 10;
+    if (typeof max_radial_length !== 'number') max_radial_length = 10;
+    var features = [];
+    for (i = 0; i < count; i++) {
+        var vertices = [],
+            circle_offsets = Array.apply(null, new Array(num_vertices + 1)).map(Math.random);
+
+        circle_offsets.forEach(sumOffsets);
+        circle_offsets.forEach(scaleOffsets);
+        vertices[vertices.length - 1] = vertices[0]; // close the ring
+
+        // center the polygon around something
+        vertices = vertices.map(vertexToCoordinate(position(bbox)));
+        features.push(feature(polygon([vertices])));
+    }
+
+    function sumOffsets(cur, index, arr) {
+        arr[index] = index > 0 ? cur + arr[index - 1] : cur;
+    }
+
+    function scaleOffsets(cur, index) {
+        cur = cur * 2 * Math.PI / circle_offsets[circle_offsets.length - 1];
+        var radial_scaler = Math.random();
+        vertices.push([radial_scaler * max_radial_length * Math.sin(cur), radial_scaler * max_radial_length * Math.cos(cur)]);
+    }
+
+    return collection(features);
+};
+
+function vertexToCoordinate(hub) {
+    return function (cur, index) {
+        return [cur[0] + hub[0], cur[1] + hub[1]];
+    };
+}
+
+function rnd() {
+    return Math.random() - 0.5;
+}
+function lon() {
+    return rnd() * 360;
+}
+function lat() {
+    return rnd() * 180;
+}
+
+function point(coordinates) {
+    return {
+        type: 'Point',
+        coordinates: coordinates || [lon(), lat()]
+    };
+}
+
+function coordInBBBOX(bbox) {
+    return [Math.random() * (bbox[2] - bbox[0]) + bbox[0], Math.random() * (bbox[3] - bbox[1]) + bbox[1]];
+}
+
+function pointInBBBOX() {
+    return {
+        type: 'Point',
+        coordinates: [lon(), lat()]
+    };
+}
+
+function polygon(coordinates) {
+    return {
+        type: 'Polygon',
+        coordinates: coordinates
+    };
+}
+
+function feature(geom) {
+    return {
+        type: 'Feature',
+        geometry: geom,
+        properties: {}
+    };
+}
+
+function collection(f) {
+    return {
+        type: 'FeatureCollection',
+        features: f
+    };
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var extent = __webpack_require__(4);
+var featurecollection = __webpack_require__(5);
+var inside = __webpack_require__(3);
+var random = __webpack_require__(7);
+
+/**
+ * Takes a number and a feature and {@link Polygon} or {@link MultiPolygon} and returns {@link Points} that reside inside the polygon. The polygon can
+ * be convex or concave. The function accounts for holes.
+ *
+ * * Given a {Number}, the number of points to be randomly generated.
+ * * Given a {@link Polygon} or {@link MultiPolygon}, the boundary of the random points
+ *
+ *
+ * @module turf-random-points-on-polygon
+ * @category measurement
+ * @param {Number} number of points to be generated
+ * @param {Feature<(Polygon|MultiPolygon)>} polygon input polygon or multipolygon
+ * @param {Object} [properties={}] properties to be appended to the point features
+ * @param {Boolean} [fc=false] if true returns points as a {@link FeatureCollection}
+ * @return {Array} || {FeatureCollection<Points>} an array or feature collection of the random points inside the polygon
+**/
+
+function randomPointsOnPolygon(number, polygon, properties, fc) {
+  if (typeof properties === 'boolean') {
+    fc = properties;
+    properties = {};
+  }
+
+  if (number < 1) {
+    return new Error('Number must be >= 1');
+  }
+
+  if (polygon.type !== 'Feature') {
+    return new Error('Polygon parameter must be a Feature<(Polygon|MultiPolygon)>');
+
+    if (polygon.geomtry.type !== 'Polygon' || polygon.geomtry.type !== 'MutliPolygon') {
+      return new Error('Polygon parameter must be a Feature<(Polygon|MultiPolygon)>');
+    }
+  }
+
+  if (this instanceof randomPointsOnPolygon) {
+    return new randomPointsOnPolygon(number, polygon, properties);
+  }
+
+  properties = properties || {};
+  fc = fc || false;
+  var points = [];
+  var bbox = extent(polygon);
+  var count = Math.round(parseFloat(number));
+
+  for (var i = 0; i <= count; i++) {
+    if (i === count) {
+      if (fc) {
+        return featurecollection(points);
+      }
+
+      return points;
+    }
+
+    var point = random('point', 1, { bbox: bbox });
+
+    if (inside(point.features[0], polygon) === false) {
+      i = --i;
+    }
+
+    if (inside(point.features[0], polygon) === true) {
+      point.features[0].properties = properties;
+      points.push(point.features[0]);
+    }
+  }
+}
+
+module.exports = randomPointsOnPolygon;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// http://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
+// modified from: https://github.com/substack/point-in-polygon/blob/master/index.js
+// which was modified from http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+/**
+ * Takes a {@link Point} feature and a {@link Polygon} feature and determines if the Point resides inside the Polygon. The Polygon can
+ * be convex or concave. The function accepts any valid Polygon or {@link MultiPolygon}
+ * and accounts for holes.
+ *
+ * @module turf/inside
+ * @category joins
+ * @param {Point} point a Point feature
+ * @param {Polygon} polygon a Polygon feature
+ * @return {Boolean} `true` if the Point is inside the Polygon; `false` if the Point is not inside the Polygon
+ * @example
+ * var pt1 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": "#f00"
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-111.467285, 40.75766]
+ *   }
+ * };
+ * var pt2 = {
+ *   "type": "Feature",
+ *   "properties": {
+ *     "marker-color": "#0f0"
+ *   },
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [-111.873779, 40.647303]
+ *   }
+ * };
+ * var poly = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Polygon",
+ *     "coordinates": [[
+ *       [-112.074279, 40.52215],
+ *       [-112.074279, 40.853293],
+ *       [-111.610107, 40.853293],
+ *       [-111.610107, 40.52215],
+ *       [-112.074279, 40.52215]
+ *     ]]
+ *   }
+ * };
+ *
+ * var features = {
+ *   "type": "FeatureCollection",
+ *   "features": [pt1, pt2, poly]
+ * };
+ *
+ * //=features
+ *
+ * var isInside1 = turf.inside(pt1, poly);
+ * //=isInside1
+ *
+ * var isInside2 = turf.inside(pt2, poly);
+ * //=isInside2
+ */
+module.exports = function (point, polygon) {
+  var polys = polygon.geometry.coordinates;
+  var pt = [point.geometry.coordinates[0], point.geometry.coordinates[1]];
+  // normalize to multipolygon
+  if (polygon.geometry.type === 'Polygon') polys = [polys];
+
+  var insidePoly = false;
+  var i = 0;
+  while (i < polys.length && !insidePoly) {
+    // check if it is in the outer ring first
+    if (inRing(pt, polys[i][0])) {
+      var inHole = false;
+      var k = 1;
+      // check for the point in any of the holes
+      while (k < polys[i].length && !inHole) {
+        if (inRing(pt, polys[i][k])) {
+          inHole = true;
+        }
+        k++;
+      }
+      if (!inHole) insidePoly = true;
+    }
+    i++;
+  }
+  return insidePoly;
+};
+
+// pt is [x,y] and ring is [[x,y], [x,y],..]
+function inRing(pt, ring) {
+  var isInside = false;
+  for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    var xi = ring[i][0],
+        yi = ring[i][1];
+    var xj = ring[j][0],
+        yj = ring[j][1];
+
+    var intersect = yi > pt[1] != yj > pt[1] && pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi;
+    if (intersect) isInside = !isInside;
+  }
+  return isInside;
+}
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var each = __webpack_require__(6).coordEach;
+
+/**
+ * Takes any {@link GeoJSON} object, calculates the extent of all input features, and returns a bounding box.
+ *
+ * @module turf/extent
+ * @category measurement
+ * @param {GeoJSON} input any valid GeoJSON Object
+ * @return {Array<number>} the bounding box of `input` given
+ * as an array in WSEN order (west, south, east, north)
+ * @example
+ * var input = {
+ *   "type": "FeatureCollection",
+ *   "features": [
+ *     {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.175329, 22.2524]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.170007, 22.267969]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.200649, 22.274641]
+ *       }
+ *     }, {
+ *       "type": "Feature",
+ *       "properties": {},
+ *       "geometry": {
+ *         "type": "Point",
+ *         "coordinates": [114.186744, 22.265745]
+ *       }
+ *     }
+ *   ]
+ * };
+ *
+ * var bbox = turf.extent(input);
+ *
+ * var bboxPolygon = turf.bboxPolygon(bbox);
+ *
+ * var resultFeatures = input.features.concat(bboxPolygon);
+ * var result = {
+ *   "type": "FeatureCollection",
+ *   "features": resultFeatures
+ * };
+ *
+ * //=result
+ */
+module.exports = function (layer) {
+  var extent = [Infinity, Infinity, -Infinity, -Infinity];
+  each(layer, function (coord) {
+    if (extent[0] > coord[0]) extent[0] = coord[0];
+    if (extent[1] > coord[1]) extent[1] = coord[1];
+    if (extent[2] < coord[0]) extent[2] = coord[0];
+    if (extent[3] < coord[1]) extent[3] = coord[1];
+  });
+  return extent;
+};
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Takes one or more {@link Feature|Features} and creates a {@link FeatureCollection}
+ *
+ * @module turf/featurecollection
+ * @category helper
+ * @param {Feature} features input Features
+ * @returns {FeatureCollection} a FeatureCollection of input features
+ * @example
+ * var features = [
+ *  turf.point([-75.343, 39.984], {name: 'Location A'}),
+ *  turf.point([-75.833, 39.284], {name: 'Location B'}),
+ *  turf.point([-75.534, 39.123], {name: 'Location C'})
+ * ];
+ *
+ * var fc = turf.featurecollection(features);
+ *
+ * //=fc
+ */
+module.exports = function (features) {
+  return {
+    type: "FeatureCollection",
+    features: features
+  };
+};
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Lazily iterate over coordinates in any GeoJSON object, similar to
+ * Array.forEach.
+ *
+ * @param {Object} layer any GeoJSON object
+ * @param {Function} callback a method that takes (value)
+ * @param {boolean=} excludeWrapCoord whether or not to include
+ * the final coordinate of LinearRings that wraps the ring in its iteration.
+ * @example
+ * var point = { type: 'Point', coordinates: [0, 0] };
+ * coordEach(point, function(coords) {
+ *   // coords is equal to [0, 0]
+ * });
+ */
+function coordEach(layer, callback, excludeWrapCoord) {
+  var i,
+      j,
+      k,
+      g,
+      geometry,
+      stopG,
+      coords,
+      geometryMaybeCollection,
+      wrapShrink = 0,
+      isGeometryCollection,
+      isFeatureCollection = layer.type === 'FeatureCollection',
+      isFeature = layer.type === 'Feature',
+      stop = isFeatureCollection ? layer.features.length : 1;
+
+  // This logic may look a little weird. The reason why it is that way
+  // is because it's trying to be fast. GeoJSON supports multiple kinds
+  // of objects at its root: FeatureCollection, Features, Geometries.
+  // This function has the responsibility of handling all of them, and that
+  // means that some of the `for` loops you see below actually just don't apply
+  // to certain inputs. For instance, if you give this just a
+  // Point geometry, then both loops are short-circuited and all we do
+  // is gradually rename the input until it's called 'geometry'.
+  //
+  // This also aims to allocate as few resources as possible: just a
+  // few numbers and booleans, rather than any temporary arrays as would
+  // be required with the normalization approach.
+  for (i = 0; i < stop; i++) {
+
+    geometryMaybeCollection = isFeatureCollection ? layer.features[i].geometry : isFeature ? layer.geometry : layer;
+    isGeometryCollection = geometryMaybeCollection.type === 'GeometryCollection';
+    stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
+
+    for (g = 0; g < stopG; g++) {
+
+      geometry = isGeometryCollection ? geometryMaybeCollection.geometries[g] : geometryMaybeCollection;
+      coords = geometry.coordinates;
+
+      wrapShrink = excludeWrapCoord && (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') ? 1 : 0;
+
+      if (geometry.type === 'Point') {
+        callback(coords);
+      } else if (geometry.type === 'LineString' || geometry.type === 'MultiPoint') {
+        for (j = 0; j < coords.length; j++) {
+          callback(coords[j]);
+        }
+      } else if (geometry.type === 'Polygon' || geometry.type === 'MultiLineString') {
+        for (j = 0; j < coords.length; j++) {
+          for (k = 0; k < coords[j].length - wrapShrink; k++) {
+            callback(coords[j][k]);
+          }
+        }
+      } else if (geometry.type === 'MultiPolygon') {
+        for (j = 0; j < coords.length; j++) {
+          for (k = 0; k < coords[j].length; k++) {
+            for (l = 0; l < coords[j][k].length - wrapShrink; l++) {
+              callback(coords[j][k][l]);
+            }
+          }
+        }
+      } else {
+        throw new Error('Unknown Geometry Type');
+      }
+    }
+  }
+}
+module.exports.coordEach = coordEach;
+
+/**
+ * Lazily reduce coordinates in any GeoJSON object into a single value,
+ * similar to how Array.reduce works. However, in this case we lazily run
+ * the reduction, so an array of all coordinates is unnecessary.
+ *
+ * @param {Object} layer any GeoJSON object
+ * @param {Function} callback a method that takes (memo, value) and returns
+ * a new memo
+ * @param {boolean=} excludeWrapCoord whether or not to include
+ * the final coordinate of LinearRings that wraps the ring in its iteration.
+ * @param {*} memo the starting value of memo: can be any type.
+ */
+function coordReduce(layer, callback, memo, excludeWrapCoord) {
+  coordEach(layer, function (coord) {
+    memo = callback(memo, coord);
+  }, excludeWrapCoord);
+  return memo;
+}
+module.exports.coordReduce = coordReduce;
+
+/**
+ * Lazily iterate over property objects in any GeoJSON object, similar to
+ * Array.forEach.
+ *
+ * @param {Object} layer any GeoJSON object
+ * @param {Function} callback a method that takes (value)
+ * @example
+ * var point = { type: 'Feature', geometry: null, properties: { foo: 1 } };
+ * propEach(point, function(props) {
+ *   // props is equal to { foo: 1}
+ * });
+ */
+function propEach(layer, callback) {
+  var i;
+  switch (layer.type) {
+    case 'FeatureCollection':
+      features = layer.features;
+      for (i = 0; i < layer.features.length; i++) {
+        callback(layer.features[i].properties);
+      }
+      break;
+    case 'Feature':
+      callback(layer.properties);
+      break;
+  }
+}
+module.exports.propEach = propEach;
+
+/**
+ * Lazily reduce properties in any GeoJSON object into a single value,
+ * similar to how Array.reduce works. However, in this case we lazily run
+ * the reduction, so an array of all properties is unnecessary.
+ *
+ * @param {Object} layer any GeoJSON object
+ * @param {Function} callback a method that takes (memo, coord) and returns
+ * a new memo
+ * @param {*} memo the starting value of memo: can be any type.
+ */
+function propReduce(layer, callback, memo) {
+  propEach(layer, function (prop) {
+    memo = callback(memo, prop);
+  });
+  return memo;
+}
+module.exports.propReduce = propReduce;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var random = __webpack_require__(1);
+
+/**
+ * Generates random {@link GeoJSON} data, including {@link Point|Points} and {@link Polygon|Polygons}, for testing
+ * and experimentation.
+ *
+ * @module turf/random
+ * @category data
+ * @param {String} [type='point'] type of features desired: 'points' or 'polygons'
+ * @param {Number} [count=1] how many geometries should be generated.
+ * @param {Object} options options relevant to the feature desired. Can include:
+ * @param {Array<number>} options.bbox a bounding box inside of which geometries
+ * are placed. In the case of {@link Point} features, they are guaranteed to be within this bounds,
+ * while {@link Polygon} features have their centroid within the bounds.
+ * @param {Number} [options.num_vertices=10] options.vertices the number of vertices added
+ * to polygon features.
+ * @param {Number} [options.max_radial_length=10] the total number of decimal
+ * degrees longitude or latitude that a polygon can extent outwards to
+ * from its center.
+ * @return {FeatureCollection} generated random features
+ * @example
+ * var points = turf.random('points', 100, {
+ *   bbox: [-70, 40, -60, 60]
+ * });
+ *
+ * //=points
+ *
+ * var polygons = turf.random('polygons', 4, {
+ *   bbox: [-70, 40, -60, 60]
+ * });
+ *
+ * //=polygons
+ */
+module.exports = function (type, count, options) {
+    options = options || {};
+    count = count || 1;
+    switch (type) {
+        case 'point':
+        case 'points':
+        case undefined:
+            return random.point(count, options.bbox);
+        case 'polygon':
+        case 'polygons':
+            return random.polygon(count, options.num_vertices, options.max_radial_length, options.bbox);
+        default:
+            throw new Error('Unknown type given: valid options are points and polygons');
+    }
+};
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.conjure = conjure;
+exports.pointsToGeoJSON = pointsToGeoJSON;
+
+var _locations = __webpack_require__(0);
+
+var defaults = {
+	bound: [90, -180, -90, 180], // A bounding box representing whole earth
+	count: 100, // The amount of points to return
+	geojson: false // Return points as an array of coordinates instead of a geojson feature set
+};
+
+function conjure(options) {
+	options = Object.assign({}, defaults, options); // Merge options and defaults, declared options taking priority
+	var points = (0, _locations.randomPoints)(options.bound, options.count);
+	if (options.geojson) points = pointsToGeoJSON(points);
+	return points;
+}
+
+function pointsToGeoJSON() {
+	var points = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+	return points.map(function (p) {
+		return {
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [p.lng, p.lat] }
+		};
+	});
+}
+
+/***/ })
+/******/ ]);
+});
 //# sourceMappingURL=mirageo.map
