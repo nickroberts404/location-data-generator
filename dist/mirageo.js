@@ -151,7 +151,7 @@ module.exports.position = position;
 
 module.exports.point = function (count, bbox) {
     var features = [];
-    for (i = 0; i < count; i++) {
+    for (var i = 0; i < count; i++) {
         features.push(feature(bbox ? point(position(bbox)) : point()));
     }
     return collection(features);
@@ -161,7 +161,7 @@ module.exports.polygon = function (count, num_vertices, max_radial_length, bbox)
     if (typeof num_vertices !== 'number') num_vertices = 10;
     if (typeof max_radial_length !== 'number') max_radial_length = 10;
     var features = [];
-    for (i = 0; i < count; i++) {
+    for (var i = 0; i < count; i++) {
         var vertices = [],
             circle_offsets = Array.apply(null, new Array(num_vertices + 1)).map(Math.random);
 
