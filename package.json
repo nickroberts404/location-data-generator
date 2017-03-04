@@ -1,6 +1,6 @@
 {
   "name": "mirageo",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A library for creating fake populations.",
   "main": "dist/mirageo.js",
   "module": "lib/index.js",
