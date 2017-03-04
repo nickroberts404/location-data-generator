@@ -6,6 +6,9 @@ You can also limit the extent of your population by bounding box or bounding pol
 
 [mirageo-server](https://github.com/nickroberts404/mirageo-server) is a tiny local server that serves data created with Mirageo, and is a good tool if you plan on eventually requesting data from a server. It also creates a single source of data that can be shared between apps/instances.
 
+mirageo-server provides an interface for manipulating/visualizing the data.
+![demo of mirageo-server](http://g.recordit.co/tUtfJRloAj.gif)
+
 ### `conjure(options)`
 ```js
 import { conjure } from 'mirageo';
