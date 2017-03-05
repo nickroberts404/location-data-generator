@@ -8,7 +8,7 @@
     "develop": "webpack --watch",
     "build": "webpack -p",
     "test": "mocha --compilers js:babel-core/register",
-    "nprepublish": "npm run test && npm run build"
+    "prepublish": "npm run test && npm run build"
   },
   "repository": "https://github.com/nickroberts404/mirageo.git",
   "author": "nickroberts404 <nickroberts404@gmail.com>",
