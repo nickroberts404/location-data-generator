@@ -13,7 +13,7 @@ mirageo-server provides an interface for manipulating/visualizing the data.
 ```js
 import { conjure } from 'mirageo';
 options = {
-	bound: [90, -180, -90, 180], // A bounding box, or a geoJSON polygon. Defaults to whole planet,
+	bound: [-180, -90, 180, 90], // A WSEN bounding box, or a geoJSON polygon. Defaults to whole planet,
 	count: 100, // The amount of points to return
 	geojson: false // Return points as a geojson features.
 };
